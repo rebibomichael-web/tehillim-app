@@ -56,6 +56,15 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
   await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('13 פרקים · ~20 דקות');
   await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('13 פרקים · ~20 דקות');
   await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('18 פרקים · ~25 דקות');
+  await expect(page.locator('.fsbar')).toBeHidden();
+  const cue = page.locator('.opt[data-k="both"] .cue');
+  await cue.scrollIntoViewIfNeeded();
+  const cueClear = await cue.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const node = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return node === el || !!(node && el.contains(node));
+  });
+  expect(cueClear).toBe(true);
   await expect(page.locator('.opt')).toHaveCount(4);
   await expect(page.locator('.opt', { hasText: 'דָּוִד' })).toHaveCount(0);
 
@@ -123,16 +132,19 @@ test('keeps a parent option unavailable until that name is typed', async ({ page
 });
 
 test('remembers the text size and the form', async ({ page }) => {
+  await expect(page.locator('.fsbar')).toBeHidden();
   const before = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--fs').trim());
   expect(before).toBe('1.1');
-  await page.locator('#plus').click();
-  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--fs').trim())).toBe('1.2');
 
   await page.locator('#name').fill('דָּוִד');
   await page.getByRole('button', { name: 'זָכָר' }).click();
   await page.locator('#next1').click();
+  await expect(page.locator('.fsbar')).toBeVisible();
+  await page.locator('#plus').click();
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--fs').trim())).toBe('1.2');
   await page.reload();
 
+  await expect(page.locator('.fsbar')).toBeHidden();
   await expect(page.locator('#name')).toHaveValue('דָּוִד');
   await expect(page.locator('#gender button.sel')).toHaveAttribute('data-g', 'm');
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--fs').trim())).toBe('1.2');
@@ -143,9 +155,11 @@ test('edit returns to the one page', async ({ page }) => {
   await page.getByRole('button', { name: 'זָכָר' }).click();
   await page.locator('#next1').click();
   await expect(page.locator('#s3')).toBeVisible();
+  await expect(page.locator('.fsbar')).toBeVisible();
   await page.locator('#edit').click();
   await expect(page.locator('#s1')).toBeVisible();
   await expect(page.locator('#s3')).toBeHidden();
+  await expect(page.locator('.fsbar')).toBeHidden();
   await expect(page.locator('#name')).toHaveValue('דָּוִד');
 });
 
@@ -176,7 +190,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v3';");
+  expect(swText).toContain("var CACHE = 'tehillim-v4';");
 
   const scope = await page.evaluate(async () => {
     const ready = await navigator.serviceWorker.ready;

@@ -111,20 +111,25 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 .seq{text-align:center;font-size:calc(13px*var(--fs));color:#777;margin:-4px 0 8px;letter-spacing:.1em}
 .editbar{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));right:14px;z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .editbar button{height:52px;padding:0 14px;border:2px solid #201e1d;background:#fff;color:#201e1d;font-size:16px;font-weight:700;font-family:"David Libre",serif}
-#s1 .ttl{font-size:calc(34px*var(--fs));margin:12px 0 20px;line-height:1.2}
-#s1 label.f{margin:8px 0 6px}
+#s1 .ttl{font-size:calc(34px*var(--fs));margin:8px 0 26px;line-height:1.2}
+#s1 label.f{margin:20px 0 8px}
+#s1 label.f.soft{font-weight:500;color:#5e5a57;margin-top:16px}
 #s1 #name{font-size:max(28px,calc(28px*var(--fs)));min-height:72px;padding:18px 14px}
 #s1 .err:empty{display:none}
 #s1 .seg{margin-top:18px}
-#s1 .seg button{min-height:68px;font-size:calc(24px*var(--fs));padding:16px 8px}
-#s1 .more{margin-top:18px;background:#fff;border:2px solid #201e1d}
-#s1 .more summary{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;font-family:"David Libre",serif;font-size:calc(18px*var(--fs));font-weight:700;cursor:pointer;list-style:none}
-#s1 .more summary::-webkit-details-marker{display:none}
-#s1 .more summary::after{content:"+";font-family:sans-serif;font-size:28px;font-weight:400;line-height:1}
-#s1 .more[open] summary{border-bottom:1px solid #bbb}
-#s1 .more[open] summary::after{content:"–"}
-#s1 .more .pad{padding:2px 14px 14px}
-#s1 .go{min-height:68px;font-size:calc(26px*var(--fs));margin-top:22px}
+#s1 .seg button{min-height:64px;font-size:calc(22px*var(--fs));padding:14px 8px}
+#s1 .choices{margin-top:32px}
+#s1 .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;box-sizing:border-box;margin:0 0 12px;padding:12px 14px;text-align:right;background:#fff;color:#201e1d;border:1px solid #d9d4d0;font-family:"David Libre",serif;cursor:pointer}
+#s1 .opt .mark{flex:none;width:18px;height:18px;border:2px solid #c8c3bf;border-radius:50%;box-sizing:border-box}
+#s1 .opt.sel{background:#fff;color:#201e1d;border:2px solid #201e1d;padding:11px 13px}
+#s1 .opt.sel .mark{border-color:#201e1d;background:#201e1d;box-shadow:inset 0 0 0 3px #fff}
+#s1 .opt .lab{flex:1;font-size:calc(18px*var(--fs));font-weight:700}
+#s1 .opt .cue{font-size:13px;font-weight:400;color:#9a9591;white-space:nowrap}
+#s1 .opt.off,#s1 .opt:disabled{color:#b0aaa6;background:#f7f6f5;border-color:#e6e2df;cursor:default}
+#s1 .opt.off .mark{border-color:#e0dcd8}
+#s1 .spell{min-height:0;margin:2px 4px 0;text-align:center;font-size:calc(16px*var(--fs));color:#8a8683;line-height:1.4}
+#s1 .spell:empty{display:none}
+#s1 .go{min-height:64px;font-size:calc(24px*var(--fs));margin-top:28px}
 </style>
 </head><body>
 <section id="s1" class="screen on">
@@ -134,29 +139,18 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  <div class="err" id="e-name"></div>
  <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m">זָכָר</button><button type="button" data-g="f">נְקֵבָה</button></div>
  <div class="err" id="e-gender"></div>
- <details class="more" id="more">
-  <summary>עוֹד פְּרָטִים</summary>
-  <div class="pad">
-   <label class="f" for="title">תּוֹאַר</label>
-   <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
-   <div class="err" id="e-title"></div>
-   <label class="f" for="father">שֵׁם הָאָב</label>
-   <input class="t" id="father" autocomplete="off">
-   <div class="err" id="e-father"></div>
-   <label class="f" for="mother">שֵׁם הָאֵם</label>
-   <input class="t" id="mother" autocomplete="off">
-   <div class="err" id="e-mother"></div>
-  </div>
- </details>
- <button class="go" id="next1">הַמְשֵׁךְ</button>
-</section>
-<section id="s2" class="screen">
- <div class="topbar"><button class="back" id="back2">→ חֲזָרָה</button><span></span></div>
- <div class="kick">תהילים קי"ט · אותיות השם</div>
- <div class="ttl">איזה שם לאיית?</div>
- <div id="opts"></div>
- <button class="go" id="next2">הַמְשֵׁךְ</button>
- <div class="note">המנהגים שונים בין הקהילות; נהגו כמנהג משפחתכם או שאלו רב.</div>
+ <label class="f soft" for="title">תּוֹאַר</label>
+ <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
+ <div class="err" id="e-title"></div>
+ <label class="f soft" for="father">שֵׁם הָאָב</label>
+ <input class="t" id="father" autocomplete="off">
+ <div class="err" id="e-father"></div>
+ <label class="f soft" for="mother">שֵׁם הָאֵם</label>
+ <input class="t" id="mother" autocomplete="off">
+ <div class="err" id="e-mother"></div>
+ <div id="opts" class="choices"></div>
+ <div id="spell" class="spell"></div>
+ <button class="go" id="next1">לַתְּהִלִּים</button>
 </section>
 <section id="s3" class="screen"><div class="skip"><label for="jump">מעבר לפרק</label><select id="jump" aria-label="מעבר לפרק"><option value="">בחרו קטע…</option></select></div><div id="book"></div></section>
 <div class="fsbar" aria-label="גודל הכתב"><button id="minus" aria-label="הקטן">א−</button><button id="plus" aria-label="הגדל">א+</button></div>
@@ -194,44 +188,48 @@ function letters(s){return (clean(s).match(/[\u05D0-\u05EA]/g)||[]).map(function
 function bn(){return S.gender==='f'?'בַּת':'בֶּן';}
 function vav(m){return 'וְ'+m;} // Waw connector is intentionally counted as a letter
 var OPTS=[
- {k:'name',he:'שם הנפטר/ת בלבד',en:'Name only',need:[]},
- {k:'father',he:'עם שם האב',en:"With father's name",need:['father']},
- {k:'mother',he:'עם שם האם',en:"With mother's name",need:['mother']},
- {k:'both',he:'עם שני ההורים',en:'With both parents',need:['father','mother']}];
+ {k:'name',he:'שם בלבד',need:[]},
+ {k:'father',he:'+ שם האב',need:['father']},
+ {k:'mother',he:'+ שם האם',need:['mother']},
+ {k:'both',he:'+ שני ההורים',need:['father','mother']}];
 function nameFor(k){var n=clean(S.name),f=clean(S.father),m=clean(S.mother);
  if(k==='name')return n; if(k==='father')return f?n+' '+bn()+' '+f:null;
  if(k==='mother')return m?n+' '+bn()+' '+m:null; return (f&&m)?n+' '+bn()+' '+f+' '+vav(m):null;}
 function withTitle(s){var t=clean(S.title);return t?t+' '+s:s;}
 function pebbleName(){var n=clean(S.name),f=clean(S.father),m=clean(S.mother),s=n;
  if(f&&m)s+=' '+bn()+' '+f+' '+vav(m);else if(f)s+=' '+bn()+' '+f;else if(m)s+=' '+bn()+' '+m;return withTitle(s);}
-function show(id){['s1','s2','s3'].forEach(function(x){$(x).classList.toggle('on',x===id)});$('editbar').style.display=id==='s3'?'block':'none';window.scrollTo(0,0);}
-// screen 1
+function show(id){['s1','s3'].forEach(function(x){$(x).classList.toggle('on',x===id)});$('editbar').style.display=id==='s3'?'block':'none';window.scrollTo(0,0);}
 function heOnly(s){return String(s||'').replace(' (Hebrew letters only)','');}
-['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);$('e-'+k).textContent=(/[A-Za-z]/.test(S[k]))?heOnly(e):'';$(k).classList.toggle('bad',!!$('e-'+k).textContent);});});
-if(clean(S.title)||clean(S.father)||clean(S.mother)) $('more').open=true;
+function ready(o){return o.need.every(function(p){return !!clean(S[p]);});}
+function mins(n){return Math.max(1, Math.round(8 + n * 0.94));}
+function renderOpts(){
+ var cur=OPTS.filter(function(o){return o.k===S.opt;})[0];
+ if(!cur||!ready(cur))S.opt='name';
+ var h='';
+ OPTS.forEach(function(o){
+  var on=ready(o), nm=on?nameFor(o.k):null, n=nm?letters(nm).length:0, sel=S.opt===o.k;
+  h+='<button type="button" class="opt'+(sel?' sel':'')+(on?'':' off')+'" data-k="'+o.k+'"'+(on?'':' disabled')+'>';
+  h+='<span class="mark" aria-hidden="true"></span><span class="lab">'+o.he+'</span>';
+  if(on&&n)h+='<span class="cue">'+n+' פרקים · ~'+mins(n)+' דקות</span>';
+  h+='</button>';
+ });
+ $('opts').innerHTML=h;
+ var spell=nameFor(S.opt)||'', bare=clean(S.name);
+ $('spell').textContent=(spell&&spell!==bare)?spell:'';
+ [].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){if(b.disabled)return;S.opt=b.dataset.k;save();renderOpts();};});
+}
+['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);$('e-'+k).textContent=(/[A-Za-z]/.test(S[k]))?heOnly(e):'';$(k).classList.toggle('bad',!!$('e-'+k).textContent);renderOpts();});});
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
-[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();$('e-gender').textContent='';}});paintG();
+[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();$('e-gender').textContent='';renderOpts();}});paintG();
+renderOpts();
 $('next1').onclick=function(){var ok=true;
  [['title',false],['name',true],['father',false],['mother',false]].forEach(function(a){var e=valid(S[a[0]],a[1]);$('e-'+a[0]).textContent=heOnly(e);$(a[0]).classList.toggle('bad',!!e);if(e)ok=false;});
  if(!S.gender){$('e-gender').textContent='בחרו זכר או נקבה';ok=false;}
- if(!ok){if($('e-title').textContent||$('e-father').textContent||$('e-mother').textContent) $('more').open=true;return;} ['title','name','father','mother'].forEach(function(k){S[k]=clean(S[k])}); save(); renderOpts(); show('s2');};
-// screen 2
-function renderOpts(){var h='';OPTS.forEach(function(o){var nm=nameFor(o.k),sel=S.opt===o.k;
-  h+='<button type="button" class="opt'+(sel?' sel':'')+'" data-k="'+o.k+'"><div><span class="lab">'+o.he+'</span> &nbsp;<span class="en">'+o.en+'</span></div>';
-  if(nm)h+='<div class="nm">'+esc(nm)+'</div><div class="cnt">'+letters(nm).length+' אותיות</div>';
-  else h+='<div class="nm miss">'+(o.need.filter(function(p){return !clean(S[p])}).map(function(p){return p==='father'?'חסר שם האב':'חסר שם האם'}).join(' · '))+'</div>';
-  h+='</button>';
-  if(sel){o.need.forEach(function(p){if(!clean(S[p]))h+='<div class="inl"><label for="inline-'+p+'">'+(p==='father'?'שֵׁם הָאָב':'שֵׁם הָאֵם')+'</label><input id="inline-'+p+'" class="t" autocomplete="off" data-p="'+p+'" aria-describedby="inline-error-'+p+'"><div class="err" id="inline-error-'+p+'" role="alert"></div></div>';});}
- });
- $('opts').innerHTML=h;
- [].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){S.opt=b.dataset.k;save();renderOpts();}});
- [].forEach.call($('opts').querySelectorAll('.inl input'),function(i){i.value=S[i.dataset.p]||'';i.addEventListener('input',function(){var e=valid(i.value,false);i.nextElementSibling.textContent=e;i.classList.toggle('bad',!!e);if(!e){S[i.dataset.p]=clean(i.value);$(i.dataset.p).value=S[i.dataset.p];save();}});i.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('next2').click();}};});
- $('next2').disabled=false;}
-function commitInline(){var ok=true;[].forEach.call($('opts').querySelectorAll('.inl input'),function(i){var e=valid(i.value,true);i.nextElementSibling.textContent=e;i.classList.toggle('bad',!!e);if(e)ok=false;else S[i.dataset.p]=clean(i.value);});
- if(ok){save();$('father').value=S.father;$('mother').value=S.mother;renderOpts();} return ok;}
-$('back2').onclick=function(){show('s1')};
-$('next2').onclick=function(){if(!commitInline())return;if(!nameFor(S.opt)){renderOpts();var first=$('opts').querySelector('.inl input');if(first)first.focus();return;}save();renderBook();show('s3');};
-$('edit').onclick=function(){renderOpts();show('s2')};
+ if(!ok)return;
+ ['title','name','father','mother'].forEach(function(k){S[k]=clean(S[k]);});
+ if(!nameFor(S.opt)){S.opt='name';renderOpts();return;}
+ save();renderBook();show('s3');};
+$('edit').onclick=function(){renderOpts();show('s1');};
 // Book navigation, populated from the rendered headings.
 function buildJump(){var sel=$('jump');sel.innerHTML='<option value="">בחרו קטע…</option>';[].forEach.call($('book').querySelectorAll('h1'),function(h,i){h.id='book-section-'+i;var o=document.createElement('option');o.value=h.id;o.textContent=h.firstChild.textContent.trim();sel.appendChild(o);});sel.value='';}
 $('jump').addEventListener('change',function(){var h=document.getElementById(this.value);if(h){h.scrollIntoView({block:'start'});}});

@@ -126,8 +126,11 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .opt.sel .mark{border-color:#201e1d;background:#201e1d;box-shadow:inset 0 0 0 3px #fff}
 #s1 .opt .lab{flex:1;font-size:calc(18px*var(--fs));font-weight:700}
 #s1 .opt .cue{font-size:13px;font-weight:400;color:#9a9591;white-space:nowrap}
-#s1 .opt.off,#s1 .opt:disabled{color:#b0aaa6;background:#f7f6f5;border-color:#e6e2df;cursor:default}
-#s1 .opt.off .mark{border-color:#e0dcd8}
+#s1 .cue:empty{display:none}
+#s1 .slot:empty{display:none}
+#s1 .choice:has(.slot:not(:empty))>.opt{margin-bottom:8px}
+#s1 .slot{margin:0 0 12px}
+#s1 .slot label.f{margin-top:8px}
 #s1 .spell{min-height:0;margin:2px 4px 0;text-align:center;font-size:calc(16px*var(--fs));color:#8a8683;line-height:1.4}
 #s1 .spell:empty{display:none}
 #s1 .go{min-height:64px;font-size:calc(24px*var(--fs));margin-top:28px}
@@ -135,7 +138,7 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 </head><body>
 <section id="s1" class="screen on">
  <div class="ttl">לְעִלּוּי נִשְׁמַת</div>
- <label class="f" for="name">הַשֵּׁם</label>
+ <label class="f" id="name-lab" for="name">שם הנפטר</label>
  <input class="t" id="name" autocomplete="off" placeholder="דָּוִד יָעִישׁ">
  <div class="err" id="e-name"></div>
  <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m">זָכָר</button><button type="button" data-g="f">נְקֵבָה</button></div>
@@ -143,13 +146,16 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  <label class="f soft" for="title">תּוֹאַר</label>
  <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
  <div class="err" id="e-title"></div>
- <label class="f soft" for="father">שֵׁם הָאָב</label>
- <input class="t" id="father" autocomplete="off">
- <div class="err" id="e-father"></div>
- <label class="f soft" for="mother">שֵׁם הָאֵם</label>
- <input class="t" id="mother" autocomplete="off">
- <div class="err" id="e-mother"></div>
- <div id="opts" class="choices"></div>
+ <div id="opts" class="choices">
+  <div class="choice"><button type="button" class="opt" data-k="name"><span class="mark" aria-hidden="true"></span><span class="lab">שם בלבד</span><span class="cue"></span></button></div>
+  <div class="choice"><button type="button" class="opt" data-k="father"><span class="mark" aria-hidden="true"></span><span class="lab">+ שם האב</span><span class="cue"></span></button><div class="slot" data-slot="father"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="mother"><span class="mark" aria-hidden="true"></span><span class="lab">+ שם האם</span><span class="cue"></span></button><div class="slot" data-slot="mother"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="both"><span class="mark" aria-hidden="true"></span><span class="lab">+ שני ההורים</span><span class="cue"></span></button><div class="slot" data-slot="both"></div></div>
+ </div>
+ <div id="park" hidden>
+  <div class="field" id="wrap-father"><label class="f soft" for="father">שֵׁם הָאָב</label><input class="t" id="father" autocomplete="off"><div class="err" id="e-father"></div></div>
+  <div class="field" id="wrap-mother"><label class="f soft" for="mother">שֵׁם הָאֵם</label><input class="t" id="mother" autocomplete="off"><div class="err" id="e-mother"></div></div>
+ </div>
  <div id="spell" class="spell"></div>
  <button class="go" id="next1">לַתְּהִלִּים</button>
 </section>
@@ -201,34 +207,44 @@ function pebbleName(){var n=clean(S.name),f=clean(S.father),m=clean(S.mother),s=
  if(f&&m)s+=' '+bn()+' '+f+' '+vav(m);else if(f)s+=' '+bn()+' '+f;else if(m)s+=' '+bn()+' '+m;return withTitle(s);}
 function show(id){['s1','s3'].forEach(function(x){$(x).classList.toggle('on',x===id)});$('editbar').style.display=id==='s3'?'block':'none';window.scrollTo(0,0);}
 function heOnly(s){return String(s||'').replace(' (Hebrew letters only)','');}
-function ready(o){return o.need.every(function(p){return !!clean(S[p]);});}
 function mins(n){return Math.max(1, Math.round(8 + n * 0.94));}
-function renderOpts(){
- var cur=OPTS.filter(function(o){return o.k===S.opt;})[0];
- if(!cur||!ready(cur))S.opt='name';
- var h='';
- OPTS.forEach(function(o){
-  var on=ready(o), nm=on?nameFor(o.k):null, n=nm?letters(nm).length:0, sel=S.opt===o.k;
-  h+='<button type="button" class="opt'+(sel?' sel':'')+(on?'':' off')+'" data-k="'+o.k+'"'+(on?'':' disabled')+'>';
-  h+='<span class="mark" aria-hidden="true"></span><span class="lab">'+o.he+'</span>';
-  if(on&&n)h+='<span class="cue">'+n+' פרקים · ~'+mins(n)+' דקות</span>';
-  h+='</button>';
+function needs(k){return (OPTS.filter(function(o){return o.k===k;})[0]||{need:[]}).need;}
+function cueFor(k){
+ if(!clean(S.name))return '';
+ if(!needs(k).every(function(p){return !!clean(S[p]);}))return '';
+ var nm=nameFor(k), n=nm?letters(nm).length:0;
+ return n?(n+' פרקים · ~'+mins(n)+' דקות'):'';
+}
+function placeParents(){
+ var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
+ ['father','mother'].forEach(function(p){
+  var wrap=$('wrap-'+p), show=needs(S.opt).indexOf(p)>=0;
+  if(show&&slot){wrap.hidden=false;if(wrap.parentNode!==slot)slot.appendChild(wrap);}
+  else{$('park').appendChild(wrap);wrap.hidden=true;}
  });
- $('opts').innerHTML=h;
+}
+function renderOpts(){
+ $('name-lab').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
+ [].forEach.call($('opts').querySelectorAll('.opt'),function(b){
+  b.classList.toggle('sel',b.dataset.k===S.opt);
+  b.querySelector('.cue').textContent=cueFor(b.dataset.k);
+ });
+ placeParents();
  var spell=nameFor(S.opt)||'', bare=clean(S.name);
  $('spell').textContent=(spell&&spell!==bare)?spell:'';
- [].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){if(b.disabled)return;S.opt=b.dataset.k;save();renderOpts();};});
 }
 ['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);$('e-'+k).textContent=(/[A-Za-z]/.test(S[k]))?heOnly(e):'';$(k).classList.toggle('bad',!!$('e-'+k).textContent);renderOpts();});});
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
 [].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();$('e-gender').textContent='';renderOpts();}});paintG();
+[].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){S.opt=b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
 renderOpts();
 $('next1').onclick=function(){var ok=true;
- [['title',false],['name',true],['father',false],['mother',false]].forEach(function(a){var e=valid(S[a[0]],a[1]);$('e-'+a[0]).textContent=heOnly(e);$(a[0]).classList.toggle('bad',!!e);if(e)ok=false;});
+ var req={title:false,name:true,father:needs(S.opt).indexOf('father')>=0,mother:needs(S.opt).indexOf('mother')>=0};
+ ['title','name','father','mother'].forEach(function(k){var e=valid(S[k],req[k]);$('e-'+k).textContent=heOnly(e);$(k).classList.toggle('bad',!!e);if(e)ok=false;});
  if(!S.gender){$('e-gender').textContent='בחרו זכר או נקבה';ok=false;}
  if(!ok)return;
  ['title','name','father','mother'].forEach(function(k){S[k]=clean(S[k]);});
- if(!nameFor(S.opt)){S.opt='name';renderOpts();return;}
+ if(!nameFor(S.opt)){renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();return;}
  save();renderBook();show('s3');};
 $('edit').onclick=function(){renderOpts();show('s1');};
 // Book navigation, populated from the rendered headings.

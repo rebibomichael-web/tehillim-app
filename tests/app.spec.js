@@ -203,7 +203,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v4';");
+  expect(swText).toContain("var CACHE = 'tehillim-v5';");
 
   const scope = await page.evaluate(async () => {
     const ready = await navigator.serviceWorker.ready;

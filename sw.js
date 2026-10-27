@@ -5,7 +5,7 @@
 */
 'use strict';
 
-var CACHE = 'tehillim-v6';
+var CACHE = 'tehillim-v7';
 var PRECACHE = [
   './',
   './index.html',
@@ -86,7 +86,7 @@ self.addEventListener('fetch', function (event) {
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).then(function (response) {
+      fetch(event.request, { cache: 'reload' }).then(function (response) {
         if (response && response.ok) {
           var copy = response.clone();
           caches.open(CACHE).then(function (cache) {

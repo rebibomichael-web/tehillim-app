@@ -209,12 +209,15 @@ function show(id){['s1','s3'].forEach(function(x){$(x).classList.toggle('on',x==
 function heOnly(s){return String(s||'').replace(' (Hebrew letters only)','');}
 function mins(n){return Math.max(1, Math.round(8 + n * 0.94));}
 function needs(k){return (OPTS.filter(function(o){return o.k===k;})[0]||{need:[]}).need;}
-function cueFor(k){
- if(!clean(S.name))return '';
- if(!needs(k).every(function(p){return !!clean(S[p]);}))return '';
- var nm=nameFor(k), n=nm?letters(nm).length:0;
- return n?(n+' פרקים · ~'+mins(n)+' דקות'):'';
+function countFor(k){
+ var n=letters(S.name).length;
+ if(k==='name')return n;
+ n+=letters(bn()).length;
+ if(k==='father')return n+letters(S.father).length;
+ if(k==='mother')return n+letters(S.mother).length;
+ return n+letters(S.father).length+letters(vav('')).length+letters(S.mother).length;
 }
+function cueFor(k){var n=countFor(k);return n+' פרקים · ~'+mins(n)+' דקות';}
 function placeParents(){
  var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
  ['father','mother'].forEach(function(p){
@@ -267,8 +270,21 @@ window.__thl={S:S,letters:letters,nameFor:nameFor,valid:valid};
 </script>
 <script>
 if ('serviceWorker' in navigator) {
+  var refreshing = false;
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!hadController || refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) {
+      function check(){ reg.update().catch(function () {}); }
+      check();
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') check();
+      });
+    }).catch(function () {});
   });
 }
 </script>

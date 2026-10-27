@@ -68,6 +68,29 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
   await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('13 פרקים · ~20 דקות');
   await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('13 פרקים · ~20 דקות');
   await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('18 פרקים · ~25 דקות');
+  const cueStyle = await page.locator('.opt[data-k="both"] .cue').evaluate((el) => {
+    const cs = getComputedStyle(el);
+    const rgb = cs.color.match(/\d+/g).map(Number);
+    const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+    const L = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+    const lab = el.parentElement.querySelector('.lab').getBoundingClientRect();
+    const cue = el.getBoundingClientRect();
+    const row = el.parentElement.getBoundingClientRect();
+    const labMid = lab.top + lab.height / 2;
+    const cueMid = cue.top + cue.height / 2;
+    return {
+      size: parseFloat(cs.fontSize),
+      contrast: 1.05 / (L + 0.05),
+      labelOneLine: lab.height < 36,
+      inside: cue.left >= row.left - 1 && cue.right <= row.right + 1,
+      sameLine: Math.abs(labMid - cueMid) < 8
+    };
+  });
+  expect(cueStyle.size).toBeGreaterThanOrEqual(16);
+  expect(cueStyle.contrast).toBeGreaterThanOrEqual(4.5);
+  expect(cueStyle.labelOneLine).toBe(true);
+  expect(cueStyle.inside).toBe(true);
+  expect(cueStyle.sameLine).toBe(true);
   await expect(page.locator('.fsbar')).toBeHidden();
   const cue = page.locator('.opt[data-k="both"] .cue');
   await cue.scrollIntoViewIfNeeded();
@@ -203,7 +226,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v5';");
+  expect(swText).toContain("var CACHE = 'tehillim-v6';");
 
   const scope = await page.evaluate(async () => {
     const ready = await navigator.serviceWorker.ready;

@@ -124,8 +124,21 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .opt .mark{flex:none;width:18px;height:18px;border:2px solid #c8c3bf;border-radius:50%;box-sizing:border-box}
 #s1 .opt.sel{background:#fff;color:#201e1d;border:2px solid #201e1d;padding:11px 13px}
 #s1 .opt.sel .mark{border-color:#201e1d;background:#201e1d;box-shadow:inset 0 0 0 3px #fff}
-#s1 .opt .lab{flex:1 0 auto;white-space:nowrap;font-size:calc(18px*var(--fs));font-weight:700}
-#s1 .opt .cue{flex:0 0 auto;max-width:100%;font-size:max(16px,calc(14.5px*var(--fs)));font-weight:400;line-height:1.35;color:#787471;white-space:nowrap}
+#s1 .opt .lab{display:flex;flex-direction:column;align-items:flex-start;flex:1 1 auto;min-width:0;white-space:normal;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15}
+#s1 .opt .lab .he{white-space:nowrap}
+#s1 .opt .lab .gloss{font-size:13px;font-weight:400;text-align:right;white-space:nowrap}
+#s1 .opt .cue{flex:0 0 auto;max-width:100%;display:flex;flex-direction:column;align-items:flex-end;font-size:max(16px,calc(14.5px*var(--fs)));font-weight:400;line-height:1.2;color:#787471;white-space:normal}
+#s1 .opt .cue .he{white-space:nowrap;line-height:1.35}
+#s1 .opt .cue .gloss{font-size:13px;font-weight:400;line-height:1.2;text-align:left;white-space:nowrap}
+#s1 .gloss{display:block;direction:ltr;unicode-bidi:isolate;font-family:system-ui,sans-serif;font-size:14px;font-weight:400;line-height:1.25;color:#787471;margin-top:1px}
+#s1 .ttl .gloss{text-align:center}
+#s1 label.f .gloss{text-align:right}
+#s1 .seg button{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+#s1 .seg button .gloss{text-align:center;font-size:13px}
+#s1 .seg button.sel .gloss{color:#efeae6}
+#s1 .go{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+#s1 .go .gloss{color:#fff;text-align:center;font-size:14px;margin-top:2px}
+#s1 .err .gloss{color:#b8250e;font-size:13px;text-align:right}
 #s1 .cue:empty{display:none}
 #s1 .slot:empty{display:none}
 #s1 .choice:has(.slot:not(:empty))>.opt{margin-bottom:8px}
@@ -137,27 +150,27 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 </style>
 </head><body>
 <section id="s1" class="screen on">
- <div class="ttl">לְעִלּוּי נִשְׁמַת</div>
- <label class="f" id="name-lab" for="name">שם הנפטר</label>
+ <div class="ttl"><span class="he">לְעִלּוּי נִשְׁמַת</span><span class="gloss" dir="ltr">In Memory Of</span></div>
+ <label class="f" id="name-lab" for="name"><span class="he">שם הנפטר</span><span class="gloss" dir="ltr">Deceased's Name</span></label>
  <input class="t" id="name" autocomplete="off" placeholder="דָּוִד יָעִישׁ">
  <div class="err" id="e-name"></div>
- <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m">זָכָר</button><button type="button" data-g="f">נְקֵבָה</button></div>
+ <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m"><span class="he">זָכָר</span><span class="gloss" dir="ltr">Male</span></button><button type="button" data-g="f"><span class="he">נְקֵבָה</span><span class="gloss" dir="ltr">Female</span></button></div>
  <div class="err" id="e-gender"></div>
- <label class="f soft" for="title">תּוֹאַר</label>
+ <label class="f soft" for="title"><span class="he">תּוֹאַר</span><span class="gloss" dir="ltr">Title (optional, e.g. HaRav)</span></label>
  <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
-  <div class="choice"><button type="button" class="opt" data-k="name"><span class="mark" aria-hidden="true"></span><span class="lab">שם בלבד</span><span class="cue"></span></button></div>
-  <div class="choice"><button type="button" class="opt" data-k="father"><span class="mark" aria-hidden="true"></span><span class="lab">+ שם האב</span><span class="cue"></span></button><div class="slot" data-slot="father"></div></div>
-  <div class="choice"><button type="button" class="opt" data-k="mother"><span class="mark" aria-hidden="true"></span><span class="lab">+ שם האם</span><span class="cue"></span></button><div class="slot" data-slot="mother"></div></div>
-  <div class="choice"><button type="button" class="opt" data-k="both"><span class="mark" aria-hidden="true"></span><span class="lab">+ שני ההורים</span><span class="cue"></span></button><div class="slot" data-slot="both"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="name"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">שם בלבד</span><span class="gloss" dir="ltr">Name Only</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button></div>
+  <div class="choice"><button type="button" class="opt" data-k="father"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האב</span><span class="gloss" dir="ltr">Plus Father's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="father"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="mother"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האם</span><span class="gloss" dir="ltr">Plus Mother's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="mother"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="both"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Plus Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
  </div>
  <div id="park" hidden>
-  <div class="field" id="wrap-father"><label class="f soft" for="father">שֵׁם הָאָב</label><input class="t" id="father" autocomplete="off"><div class="err" id="e-father"></div></div>
-  <div class="field" id="wrap-mother"><label class="f soft" for="mother">שֵׁם הָאֵם</label><input class="t" id="mother" autocomplete="off"><div class="err" id="e-mother"></div></div>
+  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><input class="t" id="father" autocomplete="off"><div class="err" id="e-father"></div></div>
+  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><input class="t" id="mother" autocomplete="off"><div class="err" id="e-mother"></div></div>
  </div>
  <div id="spell" class="spell"></div>
- <button class="go" id="next1">לַתְּהִלִּים</button>
+ <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
 </section>
 <section id="s3" class="screen"><div class="skip"><label for="jump">מעבר לפרק</label><select id="jump" aria-label="מעבר לפרק"><option value="">בחרו קטע…</option></select></div><div id="book"></div></section>
 <div class="fsbar" aria-label="גודל הכתב"><button id="minus" aria-label="הקטן">א−</button><button id="plus" aria-label="הגדל">א+</button></div>
@@ -217,7 +230,9 @@ function countFor(k){
  if(k==='mother')return n+letters(S.mother).length;
  return n+letters(S.father).length+letters(vav('')).length+letters(S.mother).length;
 }
-function cueFor(k){var n=countFor(k);return n+' פרקים · ~'+mins(n)+' דקות';}
+function cueFor(k){var n=countFor(k);return {he:n+' פרקים · ~'+mins(n)+' דקות',en:n+' sections · ~'+mins(n)+' min'};}
+var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose male or female','אותיות עבריות בלבד':'Hebrew letters only','אותיות עבריות וניקוד בלבד':'Hebrew letters and vowels only'};
+function showErr(id,msg){var el=$(id);el.textContent='';if(!msg)return;var he=heOnly(msg);var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
 function placeParents(){
  var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
  ['father','mother'].forEach(function(p){
@@ -227,24 +242,25 @@ function placeParents(){
  });
 }
 function renderOpts(){
- $('name-lab').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
+ $('name-lab').querySelector('.he').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
  [].forEach.call($('opts').querySelectorAll('.opt'),function(b){
   b.classList.toggle('sel',b.dataset.k===S.opt);
-  b.querySelector('.cue').textContent=cueFor(b.dataset.k);
+  var cue=cueFor(b.dataset.k),box=b.querySelector('.cue');
+  box.querySelector('.he').textContent=cue.he;box.querySelector('.gloss').textContent=cue.en;
  });
  placeParents();
  var spell=nameFor(S.opt)||'', bare=clean(S.name);
  $('spell').textContent=(spell&&spell!==bare)?spell:'';
 }
-['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);$('e-'+k).textContent=(/[A-Za-z]/.test(S[k]))?heOnly(e):'';$(k).classList.toggle('bad',!!$('e-'+k).textContent);renderOpts();});});
+['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);var show=/[A-Za-z]/.test(S[k]);showErr('e-'+k,show?e:'');$(k).classList.toggle('bad',show&&!!e);renderOpts();});});
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
-[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();$('e-gender').textContent='';renderOpts();}});paintG();
+[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
 [].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){S.opt=b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
 renderOpts();
 $('next1').onclick=function(){var ok=true;
  var req={title:false,name:true,father:needs(S.opt).indexOf('father')>=0,mother:needs(S.opt).indexOf('mother')>=0};
- ['title','name','father','mother'].forEach(function(k){var e=valid(S[k],req[k]);$('e-'+k).textContent=heOnly(e);$(k).classList.toggle('bad',!!e);if(e)ok=false;});
- if(!S.gender){$('e-gender').textContent='בחרו זכר או נקבה';ok=false;}
+ ['title','name','father','mother'].forEach(function(k){var e=valid(S[k],req[k]);showErr('e-'+k,e);$(k).classList.toggle('bad',!!e);if(e)ok=false;});
+ if(!S.gender){showErr('e-gender','בחרו זכר או נקבה');ok=false;}
  if(!ok)return;
  ['title','name','father','mother'].forEach(function(k){S[k]=clean(S[k]);});
  if(!nameFor(S.opt)){renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();return;}

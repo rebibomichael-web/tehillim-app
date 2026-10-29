@@ -10,36 +10,49 @@ test('opens in Hebrew, right to left', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'he');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('#s1')).toBeVisible();
-  await expect(page.locator('#s1 .ttl')).toHaveText('לְעִלּוּי נִשְׁמַת');
+  await expect(page.locator('#s1 .ttl .he')).toHaveText('לְעִלּוּי נִשְׁמַת');
+  await expect(page.locator('#s1 .ttl .gloss')).toHaveText('In Memory Of');
   await expect(page.locator('#name')).toHaveAttribute('placeholder', 'דָּוִד יָעִישׁ');
   await expect(page.locator('#s1 .en')).toHaveCount(0);
   await expect(page.locator('#title')).toBeVisible();
+  await expect(page.locator('label[for="title"] .gloss')).toHaveText('Title (optional, e.g. HaRav)');
   await expect(page.locator('#father')).toBeHidden();
   await expect(page.locator('#mother')).toBeHidden();
-  await expect(page.locator('#name-lab')).toHaveText('שם הנפטר');
-  await expect(page.locator('.opt.sel .lab')).toHaveText('שם בלבד');
-  await expect(page.locator('.opt[data-k="name"] .cue')).toHaveText('0 פרקים · ~8 דקות');
-  await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('2 פרקים · ~10 דקות');
-  await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('2 פרקים · ~10 דקות');
-  await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('3 פרקים · ~11 דקות');
+  await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטר');
+  await expect(page.locator('#name-lab .gloss')).toHaveText("Deceased's Name");
+  await expect(page.locator('.opt.sel .lab .he')).toHaveText('שם בלבד');
+  await expect(page.locator('.opt.sel .lab .gloss')).toHaveText('Name Only');
+  await expect(page.locator('#next1 .gloss')).toHaveText('Begin Tehillim');
+  await expect(page.locator('#gender button[data-g="m"] .gloss')).toHaveText('Male');
+  await expect(page.locator('#gender button[data-g="f"] .gloss')).toHaveText('Female');
+  await expect(page.locator('.opt[data-k="name"] .cue .he')).toHaveText('0 פרקים · ~8 דקות');
+  await expect(page.locator('.opt[data-k="name"] .cue .gloss')).toHaveText('0 sections · ~8 min');
+  await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('2 פרקים · ~10 דקות');
+  await expect(page.locator('.opt[data-k="mother"] .cue .he')).toHaveText('2 פרקים · ~10 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .he')).toHaveText('3 פרקים · ~11 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .gloss')).toHaveText('3 sections · ~11 min');
   await expect(page.locator('.opt[data-k="father"]')).toBeEnabled();
   await expect(page.locator('.opt[data-k="mother"]')).toBeEnabled();
   await expect(page.locator('.opt[data-k="both"]')).toBeEnabled();
   await expect(page.locator('#spell')).toBeHidden();
   await page.getByRole('button', { name: 'נְקֵבָה' }).click();
-  await expect(page.locator('#name-lab')).toHaveText('שם הנפטרת');
+  await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטרת');
+  await expect(page.locator('#name-lab .gloss')).toHaveText("Deceased's Name");
   await page.getByRole('button', { name: 'זָכָר' }).click();
-  await expect(page.locator('#name-lab')).toHaveText('שם הנפטר');
+  await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטר');
 });
 
 test('requires a Hebrew name and a gender', async ({ page }) => {
   await page.locator('#next1').click();
-  await expect(page.locator('#e-name')).toHaveText('שדה חובה');
-  await expect(page.locator('#e-gender')).toHaveText('בחרו זכר או נקבה');
+  await expect(page.locator('#e-name .he')).toHaveText('שדה חובה');
+  await expect(page.locator('#e-name .gloss')).toHaveText('Required');
+  await expect(page.locator('#e-gender .he')).toHaveText('בחרו זכר או נקבה');
+  await expect(page.locator('#e-gender .gloss')).toHaveText('Choose male or female');
   await expect(page.locator('#s3')).toBeHidden();
 
   await page.locator('#name').fill('David');
-  await expect(page.locator('#e-name')).toHaveText('אותיות עבריות בלבד');
+  await expect(page.locator('#e-name .he')).toHaveText('אותיות עבריות בלבד');
+  await expect(page.locator('#e-name .gloss')).toHaveText('Hebrew letters only');
 });
 
 test('spells a name with final letters folded, nikud ignored', async ({ page }) => {
@@ -55,50 +68,56 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
   await page.locator('#title').fill('הָרַב');
   await page.locator('#name').fill('דָּוִד יָעִישׁ');
   await page.getByRole('button', { name: 'זָכָר' }).click();
-  await expect(page.locator('#name-lab')).toHaveText('שם הנפטר');
-  await expect(page.locator('.opt[data-k="name"] .cue')).toHaveText('7 פרקים · ~15 דקות');
-  await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('9 פרקים · ~16 דקות');
-  await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('9 פרקים · ~16 דקות');
-  await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('10 פרקים · ~17 דקות');
+  await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטר');
+  await expect(page.locator('.opt[data-k="name"] .cue .he')).toHaveText('7 פרקים · ~15 דקות');
+  await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('9 פרקים · ~16 דקות');
+  await expect(page.locator('.opt[data-k="mother"] .cue .he')).toHaveText('9 פרקים · ~16 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .he')).toHaveText('10 פרקים · ~17 דקות');
   await page.locator('.opt[data-k="both"]').click();
   await expect(page.locator('#father')).toBeVisible();
   await expect(page.locator('#mother')).toBeVisible();
   await page.locator('#father').fill('יוֹסֵף');
   await page.locator('#mother').fill('אֶסְתֵּר');
 
-  await expect(page.locator('.opt[data-k="name"] .lab')).toHaveText('שם בלבד');
-  await expect(page.locator('.opt[data-k="father"] .lab')).toHaveText('+ שם האב');
-  await expect(page.locator('.opt[data-k="mother"] .lab')).toHaveText('+ שם האם');
-  await expect(page.locator('.opt[data-k="both"] .lab')).toHaveText('+ שני ההורים');
-  await expect(page.locator('.opt[data-k="name"] .cue')).toHaveText('7 פרקים · ~15 דקות');
-  await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('13 פרקים · ~20 דקות');
-  await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('13 פרקים · ~20 דקות');
-  await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('18 פרקים · ~25 דקות');
-  const cueStyle = await page.locator('.opt[data-k="both"] .cue').evaluate((el) => {
+  await expect(page.locator('.opt[data-k="name"] .lab .he')).toHaveText('שם בלבד');
+  await expect(page.locator('.opt[data-k="father"] .lab .he')).toHaveText('+ שם האב');
+  await expect(page.locator('.opt[data-k="mother"] .lab .he')).toHaveText('+ שם האם');
+  await expect(page.locator('.opt[data-k="both"] .lab .he')).toHaveText('+ שני ההורים');
+  await expect(page.locator('.opt[data-k="name"] .cue .he')).toHaveText('7 פרקים · ~15 דקות');
+  await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('13 פרקים · ~20 דקות');
+  await expect(page.locator('.opt[data-k="mother"] .cue .he')).toHaveText('13 פרקים · ~20 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .he')).toHaveText('18 פרקים · ~25 דקות');
+  const cueStyle = await page.locator('.opt[data-k="both"] .cue .he').evaluate((el) => {
     const cs = getComputedStyle(el);
     const rgb = cs.color.match(/\d+/g).map(Number);
     const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
     const L = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
-    const lab = el.parentElement.querySelector('.lab').getBoundingClientRect();
+    const rowEl = el.closest('.opt');
+    const lab = rowEl.querySelector('.lab .he').getBoundingClientRect();
+    const gloss = rowEl.querySelector('.lab .gloss').getBoundingClientRect();
     const cue = el.getBoundingClientRect();
-    const row = el.parentElement.getBoundingClientRect();
+    const row = rowEl.getBoundingClientRect();
     const labMid = lab.top + lab.height / 2;
     const cueMid = cue.top + cue.height / 2;
     return {
       size: parseFloat(cs.fontSize),
       contrast: 1.05 / (L + 0.05),
       labelOneLine: lab.height < 36,
+      glossBelow: gloss.top >= lab.bottom - 3,
       inside: cue.left >= row.left - 1 && cue.right <= row.right + 1,
-      sameLine: Math.abs(labMid - cueMid) < 8
+      sameLine: Math.abs(labMid - cueMid) < 12,
+      pageOverflow: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
     };
   });
   expect(cueStyle.size).toBeGreaterThanOrEqual(16);
   expect(cueStyle.contrast).toBeGreaterThanOrEqual(4.5);
   expect(cueStyle.labelOneLine).toBe(true);
+  expect(cueStyle.glossBelow).toBe(true);
   expect(cueStyle.inside).toBe(true);
   expect(cueStyle.sameLine).toBe(true);
+  expect(cueStyle.pageOverflow).toBe(true);
   await expect(page.locator('.fsbar')).toBeHidden();
-  const cue = page.locator('.opt[data-k="both"] .cue');
+  const cue = page.locator('.opt[data-k="both"] .cue .he');
   await cue.scrollIntoViewIfNeeded();
   const cueClear = await cue.evaluate((el) => {
     const r = el.getBoundingClientRect();
@@ -135,10 +154,10 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
 test('uses feminine grammar and repeats a letter that appears twice', async ({ page }) => {
   await page.locator('#name').fill('בֵּילָא בְּרָכָה');
   await page.getByRole('button', { name: 'נְקֵבָה' }).click();
-  await expect(page.locator('#name-lab')).toHaveText('שם הנפטרת');
-  await expect(page.locator('.opt[data-k="name"] .cue')).toHaveText('8 פרקים · ~16 דקות');
-  await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('10 פרקים · ~17 דקות');
-  await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('11 פרקים · ~18 דקות');
+  await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטרת');
+  await expect(page.locator('.opt[data-k="name"] .cue .he')).toHaveText('8 פרקים · ~16 דקות');
+  await expect(page.locator('.opt[data-k="mother"] .cue .he')).toHaveText('10 פרקים · ~17 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .he')).toHaveText('11 פרקים · ~18 דקות');
   await page.locator('#next1').click();
 
   await expect(page.locator('.seq')).toHaveText('ב י ל א ב ר כ ה');
@@ -155,18 +174,19 @@ test('reveals a parent field under the chosen row', async ({ page }) => {
   await page.getByRole('button', { name: 'זָכָר' }).click();
   await expect(page.locator('#father')).toBeHidden();
   await expect(page.locator('.opt[data-k="father"]')).toBeEnabled();
-  await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('5 פרקים · ~13 דקות');
-  await expect(page.locator('.opt[data-k="mother"] .cue')).toHaveText('5 פרקים · ~13 דקות');
-  await expect(page.locator('.opt[data-k="both"] .cue')).toHaveText('6 פרקים · ~14 דקות');
+  await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('5 פרקים · ~13 דקות');
+  await expect(page.locator('.opt[data-k="mother"] .cue .he')).toHaveText('5 פרקים · ~13 דקות');
+  await expect(page.locator('.opt[data-k="both"] .cue .he')).toHaveText('6 פרקים · ~14 דקות');
   await page.locator('.opt[data-k="father"]').click();
   await expect(page.locator('#father')).toBeVisible();
   await expect(page.locator('#mother')).toBeHidden();
   await page.locator('#next1').click();
   await expect(page.locator('#s3')).toBeHidden();
-  await expect(page.locator('#e-father')).toHaveText('שדה חובה');
+  await expect(page.locator('#e-father .he')).toHaveText('שדה חובה');
+  await expect(page.locator('#e-father .gloss')).toHaveText('Required');
 
   await page.locator('#father').fill('יוֹסֵף');
-  await expect(page.locator('.opt[data-k="father"] .cue')).toHaveText('9 פרקים · ~16 דקות');
+  await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('9 פרקים · ~16 דקות');
   await expect(page.locator('#spell')).toHaveText('דָּוִד בֶּן יוֹסֵף');
   await page.locator('.opt[data-k="name"]').click();
   await expect(page.locator('#father')).toBeHidden();
@@ -236,7 +256,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v7';");
+  expect(swText).toContain("var CACHE = 'tehillim-v8';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");
@@ -272,5 +292,5 @@ test('works offline after the service worker is installed', async ({ page, conte
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator('#name')).toBeVisible();
-  await expect(page.locator('#s1 .ttl')).toHaveText('לְעִלּוּי נִשְׁמַת');
+  await expect(page.locator('#s1 .ttl .he')).toHaveText('לְעִלּוּי נִשְׁמַת');
 });

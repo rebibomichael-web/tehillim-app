@@ -22,6 +22,8 @@ test('opens in Hebrew, right to left', async ({ page }) => {
   await expect(page.locator('#name-lab .gloss')).toHaveText("Deceased's Name");
   await expect(page.locator('.opt.sel .lab .he')).toHaveText('שם בלבד');
   await expect(page.locator('.opt.sel .lab .gloss')).toHaveText('Name Only');
+  await expect(page.locator('#ver-lab .he')).toHaveText('תפילה ותהילים: בחרו נוסח');
+  await expect(page.locator('#ver-lab .gloss')).toHaveText('Prayers and Tehillim: choose a version');
   await expect(page.locator('#next1 .gloss')).toHaveText('Begin Tehillim');
   await expect(page.locator('#gender button[data-g="m"] .gloss')).toHaveText('Male');
   await expect(page.locator('#gender button[data-g="f"] .gloss')).toHaveText('Female');
@@ -256,7 +258,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v9';");
+  expect(swText).toContain("var CACHE = 'tehillim-v10';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

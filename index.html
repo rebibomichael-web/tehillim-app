@@ -120,6 +120,8 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .seg{margin-top:18px}
 #s1 .seg button{min-height:64px;font-size:calc(22px*var(--fs));padding:14px 8px}
 #s1 .choices{margin-top:32px}
+#s1 .ver{margin:0 0 8px;font-size:calc(15px*var(--fs));font-weight:700;line-height:1.3}
+#s1 .ver .gloss{text-align:right}
 #s1 .opt{display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;row-gap:4px;width:100%;min-height:64px;box-sizing:border-box;margin:0 0 12px;padding:12px 14px;text-align:right;background:#fff;color:#201e1d;border:1px solid #d9d4d0;font-family:"David Libre",serif;cursor:pointer}
 #s1 .opt .mark{flex:none;width:18px;height:18px;border:2px solid #c8c3bf;border-radius:50%;box-sizing:border-box}
 #s1 .opt.sel{background:#fff;color:#201e1d;border:2px solid #201e1d;padding:11px 13px}
@@ -160,6 +162,7 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
+  <div class="ver" id="ver-lab"><span class="he">תפילה ותהילים: בחרו נוסח</span><span class="gloss" dir="ltr">Prayers and Tehillim: choose a version</span></div>
   <div class="choice"><button type="button" class="opt" data-k="name"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">שם בלבד</span><span class="gloss" dir="ltr">Name Only</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button></div>
   <div class="choice"><button type="button" class="opt" data-k="father"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האב</span><span class="gloss" dir="ltr">Include Father's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="father"></div></div>
   <div class="choice"><button type="button" class="opt" data-k="mother"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האם</span><span class="gloss" dir="ltr">Include Mother's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="mother"></div></div>

@@ -126,12 +126,13 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .opt .mark{flex:none;width:18px;height:18px;border:2px solid #c8c3bf;border-radius:50%;box-sizing:border-box}
 #s1 .opt.sel{background:#fff;color:#201e1d;border:2px solid #201e1d;padding:11px 13px}
 #s1 .opt.sel .mark{border-color:#201e1d;background:#201e1d;box-shadow:inset 0 0 0 3px #fff}
-#s1 .opt .lab{display:flex;flex-direction:column;align-items:flex-start;flex:1 1 auto;min-width:0;white-space:normal;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15}
-#s1 .opt .lab .he{white-space:nowrap}
-#s1 .opt .lab .gloss{font-size:13px;font-weight:400;text-align:right;white-space:nowrap}
-#s1 .opt .cue{flex:0 0 auto;max-width:100%;display:flex;flex-direction:column;align-items:flex-end;font-size:max(16px,calc(14.5px*var(--fs)));font-weight:400;line-height:1.2;color:#787471;white-space:normal}
-#s1 .opt .cue .he{white-space:nowrap;line-height:1.35}
-#s1 .opt .cue .gloss{font-size:13px;font-weight:400;line-height:1.2;text-align:left;white-space:nowrap}
+#s1 .base{display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;row-gap:4px;width:100%;box-sizing:border-box;margin:0 0 10px;padding:0 14px 6px;text-align:right;background:transparent;border:0;color:#201e1d;font-family:"David Libre",serif;cursor:default}
+#s1 .opt .lab,#s1 .base .lab{display:flex;flex-direction:column;align-items:flex-start;flex:1 1 auto;min-width:0;white-space:normal;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15}
+#s1 .opt .lab .he,#s1 .base .lab .he{white-space:nowrap}
+#s1 .opt .lab .gloss,#s1 .base .lab .gloss{font-size:13px;font-weight:400;text-align:right;white-space:nowrap}
+#s1 .opt .cue,#s1 .base .cue{flex:0 0 auto;max-width:100%;display:flex;flex-direction:column;align-items:flex-end;font-size:max(16px,calc(14.5px*var(--fs)));font-weight:400;line-height:1.2;color:#787471;white-space:normal}
+#s1 .opt .cue .he,#s1 .base .cue .he{white-space:nowrap;line-height:1.35}
+#s1 .opt .cue .gloss,#s1 .base .cue .gloss{font-size:13px;font-weight:400;line-height:1.2;text-align:left;white-space:nowrap}
 #s1 .gloss{display:block;direction:ltr;unicode-bidi:isolate;font-family:system-ui,sans-serif;font-size:14px;font-weight:400;line-height:1.25;color:#787471;margin-top:1px}
 #s1 .ttl .gloss{text-align:center}
 #s1 label.f .gloss{text-align:right}
@@ -163,10 +164,10 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
   <div class="ver" id="ver-lab"><span class="he">תפילה ותהילים: בחרו נוסח</span><span class="gloss" dir="ltr">Prayers and Tehillim: choose a version</span></div>
-  <div class="choice"><button type="button" class="opt" data-k="name"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">שם בלבד</span><span class="gloss" dir="ltr">Name Only</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button></div>
-  <div class="choice"><button type="button" class="opt" data-k="father"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האב</span><span class="gloss" dir="ltr">Include Father's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="father"></div></div>
-  <div class="choice"><button type="button" class="opt" data-k="mother"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האם</span><span class="gloss" dir="ltr">Include Mother's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="mother"></div></div>
-  <div class="choice"><button type="button" class="opt" data-k="both"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Include Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
+  <div class="choice"><div class="base" data-k="name"><span class="lab"><span class="he">שם בלבד</span><span class="gloss" dir="ltr">Name Only</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="father" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האב</span><span class="gloss" dir="ltr">Include Father's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="father"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="mother" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שם האם</span><span class="gloss" dir="ltr">Include Mother's Name</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="mother"></div></div>
+  <div class="choice"><button type="button" class="opt" data-k="both" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Include Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
  </div>
  <div id="park" hidden>
   <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><input class="t" id="father" autocomplete="off"><div class="err" id="e-father"></div></div>
@@ -246,8 +247,9 @@ function placeParents(){
 }
 function renderOpts(){
  $('name-lab').querySelector('.he').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
- [].forEach.call($('opts').querySelectorAll('.opt'),function(b){
-  b.classList.toggle('sel',b.dataset.k===S.opt);
+ [].forEach.call($('opts').querySelectorAll('[data-k]'),function(b){
+  var pressed=b.dataset.k===S.opt;
+  if(b.tagName==='BUTTON'){b.classList.toggle('sel',pressed);b.setAttribute('aria-pressed',pressed?'true':'false');}
   var cue=cueFor(b.dataset.k),box=b.querySelector('.cue');
   box.querySelector('.he').textContent=cue.he;box.querySelector('.gloss').textContent=cue.en;
  });
@@ -258,7 +260,7 @@ function renderOpts(){
 ['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);var show=/[A-Za-z]/.test(S[k]);showErr('e-'+k,show?e:'');$(k).classList.toggle('bad',show&&!!e);renderOpts();});});
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
 [].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
-[].forEach.call($('opts').querySelectorAll('.opt'),function(b){b.onclick=function(){S.opt=b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
+[].forEach.call($('opts').querySelectorAll('button.opt'),function(b){b.onclick=function(){S.opt=S.opt===b.dataset.k?'name':b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
 renderOpts();
 $('next1').onclick=function(){var ok=true;
  var req={title:false,name:true,father:needs(S.opt).indexOf('father')>=0,mother:needs(S.opt).indexOf('mother')>=0};

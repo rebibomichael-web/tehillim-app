@@ -120,9 +120,9 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .seg{margin-top:18px}
 #s1 .seg button{min-height:64px;font-size:calc(22px*var(--fs));padding:14px 8px}
 #s1 .choices{margin-top:32px}
-#s1 .ver{margin:0 0 8px;font-size:calc(15px*var(--fs));font-weight:700;line-height:1.3}
-#s1 .ver .gloss{text-align:right}
-#s1 .ver-row{display:flex;align-items:center;justify-content:flex-start}
+#s1 .ver{display:flex;flex-direction:column;align-items:stretch;margin:0 0 8px;font-size:calc(15px*var(--fs));font-weight:700;line-height:1.3}
+#s1 .ver-row{display:flex;flex-flow:row nowrap;align-items:center;justify-content:flex-start;width:fit-content;max-width:100%}
+#s1 .ver .gloss{display:block;width:100%;margin-top:1px;text-align:right}
 #s1 .info{flex:none;width:44px;height:44px;margin:0;padding:0;border:0;background:transparent;color:#5e5a57;font:500 20px/1 system-ui,sans-serif;cursor:pointer;border-radius:50%}
 #s1 .info:focus-visible{outline:3px solid #15599c;outline-offset:2px}
 .info-pop{position:fixed;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;background:rgba(32,30,29,.45)}
@@ -150,7 +150,9 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .base{display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;row-gap:4px;width:100%;box-sizing:border-box;margin:0 0 10px;padding:0 14px 6px;text-align:right;background:transparent;border:0;color:#201e1d;font-family:"David Libre",serif;cursor:default}
 #s1 .opt .lab,#s1 .base .lab{display:flex;flex-direction:column;align-items:flex-start;flex:1 1 auto;min-width:0;white-space:normal;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15}
 #s1 .opt .lab .he,#s1 .base .lab .he{white-space:nowrap}
+#s1 .base .lab .he,#s1 .base .lab .gloss{white-space:normal}
 #s1 .opt .lab .gloss,#s1 .base .lab .gloss{font-size:13px;font-weight:400;text-align:right;white-space:nowrap}
+#s1 .base .lab .gloss{white-space:normal}
 #s1 .opt .cue,#s1 .base .cue{flex:0 0 auto;max-width:100%;display:flex;flex-direction:column;align-items:flex-end;font-size:max(16px,calc(14.5px*var(--fs)));font-weight:400;line-height:1.2;color:#787471;white-space:normal}
 #s1 .opt .cue .he,#s1 .base .cue .he{white-space:nowrap;line-height:1.35}
 #s1 .opt .cue .gloss,#s1 .base .cue .gloss{font-size:13px;font-weight:400;line-height:1.2;text-align:left;white-space:nowrap}
@@ -288,8 +290,12 @@ function placeParents(){
   else{$('park').appendChild(wrap);wrap.hidden=true;}
  });
 }
+function shownName(){var n=clean(S.name),t=clean(S.title);if(!n)return '';return t?t+' '+n:n;}
 function renderOpts(){
  $('name-lab').querySelector('.he').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
+ var shown=shownName(),base=$('opts').querySelector('.base');
+ base.querySelector('.lab .he').textContent=shown?'שם בלבד: '+shown:'שם בלבד';
+ base.querySelector('.lab .gloss').textContent=shown?'Name Only: '+shown:'Name Only';
  [].forEach.call($('opts').querySelectorAll('[data-k]'),function(b){
   var pressed=b.dataset.k===S.opt;
   if(b.tagName==='BUTTON'){b.classList.toggle('sel',pressed);b.setAttribute('aria-pressed',pressed?'true':'false');}

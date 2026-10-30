@@ -128,7 +128,8 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
   await page.locator('#father').fill('יוֹסֵף');
   await page.locator('#mother').fill('אֶסְתֵּר');
 
-  await expect(page.locator('.base .lab .he')).toHaveText('שם בלבד');
+  await expect(page.locator('.base .lab .he')).toHaveText('שם בלבד: הָרַב דָּוִד יָעִישׁ');
+  await expect(page.locator('.base .lab .gloss')).toHaveText('Name Only: הָרַב דָּוִד יָעִישׁ');
   await expect(page.locator('.opt[data-k="father"] .lab .he')).toHaveText('+ שם האב');
   await expect(page.locator('.opt[data-k="mother"] .lab .he')).toHaveText('+ שם האם');
   await expect(page.locator('.opt[data-k="both"] .lab .he')).toHaveText('+ שני ההורים');
@@ -308,7 +309,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v13';");
+  expect(swText).toContain("var CACHE = 'tehillim-v14';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

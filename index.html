@@ -228,11 +228,15 @@ function mins(n){return Math.max(1, Math.round(8 + n * 0.94));}
 function needs(k){return (OPTS.filter(function(o){return o.k===k;})[0]||{need:[]}).need;}
 function countFor(k){
  var n=letters(S.name).length;
- if(k==='name')return n;
- n+=letters(bn()).length;
- if(k==='father')return n+letters(S.father).length;
- if(k==='mother')return n+letters(S.mother).length;
- return n+letters(S.father).length+letters(vav('')).length+letters(S.mother).length;
+ if(k==='father'||k==='both')n+=letters(S.father).length;
+ if(k==='mother'||k==='both')n+=letters(S.mother).length;
+ return n;
+}
+function spelledLetters(){
+ var L=letters(S.name);
+ if(S.opt==='father'||S.opt==='both')L=L.concat(letters(S.father));
+ if(S.opt==='mother'||S.opt==='both')L=L.concat(letters(S.mother));
+ return L;
 }
 function cueFor(k){var n=countFor(k);return {he:n+' פרקים · ~'+mins(n)+' דקות',en:n+' sections · ~'+mins(n)+' min'};}
 var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose male or female','אותיות עבריות בלבד':'Hebrew letters only','אותיות עבריות וניקוד בלבד':'Hebrew letters and vowels only'};
@@ -276,7 +280,7 @@ function buildJump(){var sel=$('jump');sel.innerHTML='<option value="">בחרו 
 $('jump').addEventListener('change',function(){var h=document.getElementById(this.value);if(h){h.scrollIntoView({block:'start'});}});
 // booklet
 function st(c){return '<div class="st"><div class="ltr">'+c+'</div><p class="txt">'+BANK[c]+'</p></div>';}
-function renderBook(){var f=S.gender==='f',spell=nameFor(S.opt),full=withTitle(spell),L=letters(spell);
+function renderBook(){var f=S.gender==='f',spell=nameFor(S.opt),full=withTitle(spell),L=spelledLetters();
  var safeFull=esc(full);var h='<div class="cover"><div class="lil">לְעִלּוּי נִשְׁמַת</div><div class="big">'+safeFull+'</div></div>';
  h+=FIX.A+FIX.B;
  h+='<h1 class="brk">ג · תְּהִלִּים קי״ט — אוֹתִיּוֹת הַשֵּׁם<span class="en">Psalm 119 · letters of the name</span></h1><div class="seq">'+L.join(' ')+'</div>'+L.map(st).join('');

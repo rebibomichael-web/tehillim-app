@@ -56,6 +56,41 @@ test('opens in Hebrew, right to left', async ({ page }) => {
   await expect(page.locator('#name-lab .he')).toHaveText('שם הנפטר');
 });
 
+test('explains the parent-name choice', async ({ page }) => {
+  const info = page.locator('#info');
+  const box = await info.boundingBox();
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
+  await expect(info).toHaveAttribute('aria-label', 'הסבר: שם האב או שם האם');
+  await expect(page.locator('#info-pop')).toBeHidden();
+
+  await info.click();
+  await expect(page.locator('#info-pop')).toBeVisible();
+  await expect(page.locator('#info')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#info-title')).toHaveText('שם האב או שם האם?');
+  await expect(page.locator('.info-he p').nth(0)).toHaveText('אשכנזים: שם האב. לפי גשר החיים (ח״א פרק ל״א), אשכנזים מזכירים את הנפטר בשם אביו.');
+  await expect(page.locator('.info-he p').nth(1)).toHaveText('ספרדים: שם האם. ספרדים מזכירים בשם אמו, על פי הזוהר (כף החיים או״ח רפ״ד:ל״ז).');
+  await expect(page.locator('.info-he p').nth(2)).toHaveText('שני ההורים: יש קהילות המזכירות את שניהם (בצל החכמה ח״ג צ״א).');
+  await expect(page.locator('.info-he .info-sum')).toHaveText('לפרק קי״ט עצמו, גשר החיים מביא רק את אותיות שם הנפטר ואותיות נשמה. לכן כל אפשרות כאן כשרה; נהגו כמנהג משפחתכם.');
+  await expect(page.locator('.info-en h2')).toHaveText("Father's or mother's name?");
+  await expect(page.locator('.info-en p').nth(0)).toHaveText("Ashkenazim: father's name. Gesher HaChaim (I:31) says Ashkenazim name the deceased with the father's name.");
+  await expect(page.locator('.info-en p').nth(1)).toHaveText("Sephardim: mother's name. Sephardim use the mother's name, based on the Zohar (Kaf HaChaim 284:37).");
+  await expect(page.locator('.info-en p').nth(2)).toHaveText('Both parents: some communities name both (Betzel HaChochma III:91).');
+  await expect(page.locator('.info-en .info-sum')).toHaveText("For Psalm 119 itself, Gesher HaChaim lists only the letters of the name and נשמה. So any option here is fine; follow your family's custom.");
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#info-pop')).toBeHidden();
+  await expect(page.locator('#info')).toHaveAttribute('aria-expanded', 'false');
+
+  await info.click();
+  await page.locator('#info-x').click();
+  await expect(page.locator('#info-pop')).toBeHidden();
+
+  await info.click();
+  await page.locator('#info-pop').click({ position: { x: 8, y: 8 } });
+  await expect(page.locator('#info-pop')).toBeHidden();
+});
+
 test('requires a Hebrew name and a gender', async ({ page }) => {
   await page.locator('#next1').click();
   await expect(page.locator('#e-name .he')).toHaveText('שדה חובה');
@@ -273,7 +308,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v12';");
+  expect(swText).toContain("var CACHE = 'tehillim-v13';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

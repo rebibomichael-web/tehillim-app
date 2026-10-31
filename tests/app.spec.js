@@ -91,6 +91,32 @@ test('explains the parent-name choice', async ({ page }) => {
   await expect(page.locator('#info-pop')).toBeHidden();
 });
 
+test('hints when בן or בת is its own word', async ({ page }) => {
+  await expect(page.locator('#h-name')).toBeHidden();
+  await page.locator('#name').fill('דוד בן יוסף');
+  await expect(page.locator('#h-name')).toBeVisible();
+  await expect(page.locator('#h-name .he')).toHaveText('רק שם הנפטר/ת, בלי בן/בת ושם ההורה. שם ההורה מתווסף למטה.');
+  await expect(page.locator('#h-name .gloss')).toHaveText("Enter only the deceased's own name, without ben/bat or the parent's name. You can add the parent below.");
+  await expect(page.locator('#name')).not.toHaveClass(/bad/);
+
+  await page.locator('#name').fill('בנימין');
+  await expect(page.locator('#h-name')).toBeHidden();
+  await page.locator('#name').fill('בתיה');
+  await expect(page.locator('#h-name')).toBeHidden();
+  await page.locator('#name').fill('בֵּן');
+  await expect(page.locator('#h-name')).toBeVisible();
+  await page.locator('#name').fill('דוד');
+  await expect(page.locator('#h-name')).toBeHidden();
+
+  await page.locator('.opt[data-k="father"]').click();
+  await page.locator('#father').fill('בן');
+  await expect(page.locator('#h-father')).toBeVisible();
+  await expect(page.locator('#h-father .he')).toHaveText('רק שם ההורה, בלי בן/בת');
+  await expect(page.locator('#h-father .gloss')).toHaveText("Parent's name only, without ben/bat");
+  await page.locator('#father').fill('יוסף');
+  await expect(page.locator('#h-father')).toBeHidden();
+});
+
 test('requires a Hebrew name and a gender', async ({ page }) => {
   await page.locator('#next1').click();
   await expect(page.locator('#e-name .he')).toHaveText('שדה חובה');
@@ -309,7 +335,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v14';");
+  expect(swText).toContain("var CACHE = 'tehillim-v15';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

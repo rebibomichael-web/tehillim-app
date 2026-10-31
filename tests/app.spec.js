@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -347,7 +348,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v16';");
+  expect(swText).toContain("var CACHE = 'tehillim-v17';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");
@@ -385,3 +386,103 @@ test('works offline after the service worker is installed', async ({ page, conte
   await expect(page.locator('#name')).toBeVisible();
   await expect(page.locator('#s1 .ttl .he')).toHaveText('לְעִלּוּי נִשְׁמַת');
 });
+
+function hebOnly(s) {
+  return String(s || '').replace(/[\u0591-\u05C7\u200e\u200f\u202a-\u202e]/g, '').replace(/\s+/g, '');
+}
+
+async function pdfPages(file) {
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const data = new Uint8Array(fs.readFileSync(file));
+  const doc = await pdfjs.getDocument({ data, disableWorker: true }).promise;
+  const pages = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const rows = new Map();
+    for (const item of content.items) {
+      if (!item.str) continue;
+      const y = Math.round(item.transform[5]);
+      if (!rows.has(y)) rows.set(y, []);
+      rows.get(y).push({ x: item.transform[4], str: item.str });
+    }
+    let text = '';
+    for (const y of [...rows.keys()].sort((a, b) => b - a)) {
+      text += rows.get(y).sort((a, b) => b.x - a.x).map((part) => part.str).join('');
+    }
+    pages.push(hebOnly(text));
+  }
+  return pages;
+}
+
+test('prints a booklet without splitting a stanza', async ({ page }) => {
+  test.setTimeout(90000);
+  await expect(page.locator('#printpdf')).toBeHidden();
+
+  async function booklet(file, fill) {
+    await fill();
+    await page.locator('#next1').click();
+    await expect(page.locator('#s3')).toBeVisible();
+    await expect(page.locator('#printpdf .he')).toHaveText('הורדת PDF / הדפסה');
+    await expect(page.locator('#printpdf .gloss')).toHaveText('Download PDF / Print');
+    const cover = (await page.locator('.cover .big').innerText()).trim();
+    const printedTitle = await page.evaluate(() => new Promise((resolve) => {
+      window.print = () => resolve(document.title);
+      document.getElementById('printpdf').click();
+    }));
+    expect(printedTitle).toBe('תהילים - ' + cover);
+    const stanzas = await page.locator('.st').evaluateAll((els) => els.map((el) => el.querySelector('.txt').textContent));
+    await page.evaluate(() => document.fonts.ready);
+    await page.pdf({ path: file, preferCSSPageSize: true, printBackground: false });
+    const pages = await pdfPages(file);
+    expect(pages.length).toBeGreaterThan(2);
+    const joined = pages.join('\n');
+    expect(joined).not.toContain('הורדתPDF');
+    expect(joined).not.toContain('DownloadPDF');
+    expect(joined).not.toContain('בחרוקטע');
+    expect(pages[0]).toContain('לעלוינשמת');
+    expect(pages[0]).toContain(hebOnly(cover));
+    expect(pages[0]).not.toContain('אשריצראתכם');
+    let cursor = { page: 0, index: 0 };
+    for (const stanza of stanzas) {
+      const plain = hebOnly(stanza);
+      const head = plain.slice(0, 18);
+      const tail = plain.slice(-18);
+      const start = findOnPages(pages, head, cursor);
+      expect(start, head).not.toBeNull();
+      const end = findOnPages(pages, tail, start);
+      expect(end, tail).not.toBeNull();
+      expect(end.page).toBe(start.page);
+      cursor = { page: start.page, index: start.index };
+    }
+    return pages.length;
+  }
+
+  const david = '/opt/cursor/artifacts/tehillim-david-yosef.pdf';
+  const bila = '/opt/cursor/artifacts/tehillim-bila-sarah.pdf';
+  fs.mkdirSync('/opt/cursor/artifacts', { recursive: true });
+  const davidPages = await booklet(david, async () => {
+    await page.locator('#name').fill('דוד');
+    await page.getByRole('button', { name: 'זָכָר' }).click();
+    await page.locator('.opt[data-k="father"]').click();
+    await page.locator('#father').fill('יוסף');
+  });
+  await page.locator('#edit').click();
+  const bilaPages = await booklet(bila, async () => {
+    await page.locator('#name').fill('בילה ברכה');
+    await page.getByRole('button', { name: 'נְקֵבָה' }).click();
+    await page.locator('.opt[data-k="mother"]').click();
+    await page.locator('#mother').fill('שרה');
+  });
+  expect(davidPages).toBeGreaterThan(2);
+  expect(bilaPages).toBeGreaterThan(2);
+});
+
+function findOnPages(pages, needle, from) {
+  for (let p = from.page; p < pages.length; p++) {
+    const at = p === from.page ? from.index : 0;
+    const i = pages[p].indexOf(needle, at);
+    if (i >= 0) return { page: p, index: i + needle.length };
+  }
+  return null;
+}

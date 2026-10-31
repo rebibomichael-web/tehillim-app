@@ -5,7 +5,7 @@
 */
 'use strict';
 
-var CACHE = 'tehillim-v16';
+var CACHE = 'tehillim-v17';
 var PRECACHE = [
   './',
   './index.html',

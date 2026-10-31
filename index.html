@@ -177,6 +177,31 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .spell{min-height:0;margin:2px 4px 0;text-align:center;font-size:calc(16px*var(--fs));color:#8a8683;line-height:1.4}
 #s1 .spell:empty{display:none}
 #s1 .go{min-height:64px;font-size:calc(24px*var(--fs));margin-top:28px}
+#s3 .printbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:56px;margin:0 0 16px;padding:8px 12px;background:#fff;color:#201e1d;border:2px solid #201e1d;font-family:"David Libre",serif;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15;cursor:pointer}
+#s3 .printbtn .gloss{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;color:#787471;font-family:system-ui,sans-serif;font-size:13px;font-weight:400;margin-top:2px}
+@media print{
+ @page{size:A4;margin:16mm 14mm 18mm}
+ @page{@bottom-center{content:counter(page);font-family:"David Libre",serif;font-size:11pt;color:#000}}
+ html,body{background:#fff !important;color:#000 !important;margin:0 !important;padding:0 !important}
+ #s1,.fsbar,.editbar,.skip,#printpdf,#info-pop,button{display:none !important}
+ #s3,#s3.on{display:block !important;max-width:none !important;background:#fff}
+ #book{max-width:none !important;margin:0 !important}
+ .cover{break-after:page;page-break-after:always;text-align:center;border:0;margin:0;padding:42mm 8mm 0;background:#fff}
+ .cover .lil{font-size:18pt;letter-spacing:.06em;color:#000}
+ .cover .big{font-size:28pt;font-weight:700;line-height:1.45;margin-top:8mm;color:#000}
+ h1,h2,.sub{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid;color:#000}
+ h1{font-size:15pt;margin:0 0 4mm;padding-bottom:1mm;border-bottom:1.5pt solid #000}
+ h2{font-size:13.5pt;margin:5mm 0 2mm}
+ h1.brk{break-before:page;page-break-before:always}
+ .sub{font-size:13pt;margin:5mm 0 2mm;border-bottom:1pt solid #000}
+ .seq{break-after:avoid;page-break-after:avoid;font-size:13pt;color:#000;text-align:center}
+ .st{break-inside:avoid;page-break-inside:avoid;margin:0 0 5mm}
+ .ltr{font-size:14pt;font-weight:700;text-align:center;color:#000;margin:0 0 1mm}
+ .txt{font-size:17pt;line-height:1.7;color:#000;text-align:right;margin:0 0 3mm;orphans:3;widows:3}
+ .big2{font-size:17pt;line-height:1.75}
+ .en{font-size:9pt;color:#222}
+ .en2{font-size:10pt;color:#222}
+}
 </style>
 </head><body>
 <section id="s1" class="screen on">
@@ -204,7 +229,7 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  <div id="spell" class="spell"></div>
  <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
 </section>
-<section id="s3" class="screen"><div class="skip"><label for="jump">מעבר לפרק</label><select id="jump" aria-label="מעבר לפרק"><option value="">בחרו קטע…</option></select></div><div id="book"></div></section>
+<section id="s3" class="screen"><button type="button" class="printbtn" id="printpdf"><span class="he">הורדת PDF / הדפסה</span><span class="gloss" dir="ltr">Download PDF / Print</span></button><div class="skip"><label for="jump">מעבר לפרק</label><select id="jump" aria-label="מעבר לפרק"><option value="">בחרו קטע…</option></select></div><div id="book"></div></section>
 <div class="fsbar" aria-label="גודל הכתב"><button id="minus" aria-label="הקטן">א−</button><button id="plus" aria-label="הגדל">א+</button></div>
 <div class="editbar" id="editbar" style="display:none"><button id="edit">✎ עריכה</button></div>
 <div id="info-pop" class="info-pop" hidden>
@@ -338,6 +363,13 @@ $('next1').onclick=function(){var ok=true;
  if(!nameFor(S.opt)){renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();return;}
  save();renderBook();show('s3');};
 $('edit').onclick=function(){renderOpts();show('s1');};
+$('printpdf').onclick=function(){
+ var name=document.querySelector('.cover .big');
+ var prev=document.title;
+ document.title='תהילים - '+(name?name.textContent.trim():'');
+ window.print();
+ document.title=prev;
+};
 // Book navigation, populated from the rendered headings.
 function buildJump(){var sel=$('jump');sel.innerHTML='<option value="">בחרו קטע…</option>';[].forEach.call($('book').querySelectorAll('h1'),function(h,i){h.id='book-section-'+i;var o=document.createElement('option');o.value=h.id;o.textContent=h.firstChild.textContent.trim();sel.appendChild(o);});sel.value='';}
 $('jump').addEventListener('change',function(){var h=document.getElementById(this.value);if(h){h.scrollIntoView({block:'start'});}});

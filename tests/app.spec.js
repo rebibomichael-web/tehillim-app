@@ -103,12 +103,24 @@ test('hints when בן or בת is its own word', async ({ page }) => {
   await expect(page.locator('#h-name')).toBeHidden();
   await page.locator('#name').fill('בתיה');
   await expect(page.locator('#h-name')).toBeHidden();
+
+  const compounds = ['בן ציון', 'בןציון', 'בן-ציון', 'בן־ציון', 'בֶּן צִיּוֹן', 'בן עמי', 'בן אבי', 'בן שמואל', 'בן חיים', 'בן שחר', 'בן משה', 'בת שבע', 'בת ציון', 'בת אל', 'בת עמי', 'בת חן', 'בת יה'];
+  for (const name of compounds) {
+    await page.locator('#name').fill(name);
+    await expect(page.locator('#h-name'), name).toBeHidden();
+  }
+  await page.locator('#name').fill('בן ציון בן יעקב');
+  await expect(page.locator('#h-name')).toBeVisible();
   await page.locator('#name').fill('בֵּן');
   await expect(page.locator('#h-name')).toBeVisible();
   await page.locator('#name').fill('דוד');
   await expect(page.locator('#h-name')).toBeHidden();
 
   await page.locator('.opt[data-k="father"]').click();
+  await page.locator('#father').fill('בן ציון');
+  await expect(page.locator('#h-father')).toBeHidden();
+  await page.locator('#father').fill('בן ציון בן יעקב');
+  await expect(page.locator('#h-father')).toBeVisible();
   await page.locator('#father').fill('בן');
   await expect(page.locator('#h-father')).toBeVisible();
   await expect(page.locator('#h-father .he')).toHaveText('רק שם ההורה, בלי בן/בת');
@@ -335,7 +347,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v15';");
+  expect(swText).toContain("var CACHE = 'tehillim-v16';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

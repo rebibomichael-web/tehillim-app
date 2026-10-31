@@ -296,7 +296,17 @@ function placeParents(){
  });
 }
 function shownName(){var n=clean(S.name),t=clean(S.title);if(!n)return '';return t?t+' '+n:n;}
-function hasBenBat(s){return (s||'').normalize('NFC').replace(/[\u0591-\u05C7]/g,'').split(/[^\u05D0-\u05EA]+/).filter(Boolean).some(function(w){return w==='בן'||w==='בת';});}
+var COMPOUND={'בן':['ציון','עמי','אבי','שמואל','חיים','שחר','משה'],'בת':['שבע','ציון','אל','עמי','חן','יה']};
+function hasBenBat(s){
+ var words=(s||'').normalize('NFC').replace(/[\u0591-\u05C7]/g,'').split(/[^\u05D0-\u05EA]+/).filter(Boolean);
+ for(var i=0;i<words.length;i++){
+  var next=COMPOUND[words[i]];
+  if(!next)continue;
+  if(next.indexOf(words[i+1])>=0){i++;continue;}
+  return true;
+ }
+ return false;
+}
 function paintHints(){['name','father','mother'].forEach(function(k){var el=$('h-'+k);if(el)el.hidden=!hasBenBat(S[k]);});}
 function renderOpts(){
  $('name-lab').querySelector('.he').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';

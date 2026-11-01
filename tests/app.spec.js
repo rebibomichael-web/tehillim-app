@@ -17,13 +17,11 @@ test('opens in Hebrew, right to left', async ({ page }) => {
   for (const id of ['name', 'title', 'father', 'mother']) {
     const field = page.locator('#' + id);
     await expect(field).toHaveAttribute('type', 'text');
-    await expect(field).toHaveAttribute('lang', 'he');
-    await expect(field).toHaveAttribute('dir', 'rtl');
-    await expect(field).toHaveAttribute('inputmode', 'text');
-    await expect(field).toHaveAttribute('autocomplete', 'nope');
-    await expect(field).toHaveAttribute('autocorrect', 'off');
-    await expect(field).toHaveAttribute('autocapitalize', 'off');
-    await expect(field).toHaveJSProperty('spellcheck', false);
+    await expect(field).not.toHaveAttribute('lang');
+    await expect(field).not.toHaveAttribute('inputmode');
+    await expect(field).not.toHaveAttribute('autocomplete');
+    await expect(field).not.toHaveAttribute('autocorrect');
+    await expect(field).not.toHaveAttribute('autocapitalize');
   }
   await expect(page.locator('#s1 .en')).toHaveCount(0);
   await expect(page.locator('#title')).toBeVisible();
@@ -200,6 +198,33 @@ test('the on-screen Hebrew keyboard types into the name', async ({ page }) => {
   await page.locator('#hkb [data-k="back"]').click();
   await expect(page.locator('#name')).toHaveValue('ד');
   await page.locator('#hkb [data-k="done"]').click();
+  await expect(page.locator('#hkb')).toBeHidden();
+});
+
+test('builds the booklet after typing both names on the Hebrew keyboard', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (err) => errors.push(err.message));
+  await page.locator('.hebkey[data-for="name"]').click();
+  for (const ch of ['ד', 'ו', 'ד', 'ץ']) await page.locator('#hkb [data-k="' + ch + '"]').click();
+  await page.locator('#name').focus();
+  await page.evaluate(() => document.querySelector('.opt[data-k="father"]').click());
+  await expect(page.locator('#father')).toBeVisible();
+  await page.getByRole('button', { name: 'זָכָר' }).click();
+  await page.locator('.hebkey[data-for="father"]').click();
+  for (const ch of ['י', 'ו', 'ס', 'ף']) await page.locator('#hkb [data-k="' + ch + '"]').click();
+  await expect(page.locator('#hkb')).toBeVisible();
+  await page.locator('#next1').click();
+  await expect(page.locator('#s3')).toBeVisible();
+  await expect(page.locator('#hkb')).toBeHidden();
+  await expect(page.locator('.cover .big')).toContainText('דודץ');
+  await expect(page.locator('.cover .big')).toContainText('יוסף');
+  expect(errors).toEqual([]);
+});
+
+test('tapping outside the Hebrew keyboard closes it', async ({ page }) => {
+  await page.locator('.hebkey[data-for="name"]').click();
+  await expect(page.locator('#hkb')).toBeVisible();
+  await page.locator('#s1 .ttl').click();
   await expect(page.locator('#hkb')).toBeHidden();
 });
 
@@ -410,7 +435,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v22';");
+  expect(swText).toContain("var CACHE = 'tehillim-v23';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

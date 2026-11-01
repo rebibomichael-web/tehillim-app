@@ -223,14 +223,14 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 <section id="s1" class="screen on">
  <div class="ttl"><span class="he">לְעִלּוּי נִשְׁמַת</span><span class="gloss" dir="ltr">In Memory Of</span></div>
  <label class="f" id="name-lab" for="name"><span class="he">שם הנפטר</span><span class="gloss" dir="ltr">Deceased's Name</span></label>
- <div class="iname"><input class="t" id="name" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="דָּוִד יָעִישׁ"><button type="button" class="hebkey" data-for="name" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
+ <div class="iname"><input class="t" id="name" type="text" placeholder="דָּוִד יָעִישׁ"><button type="button" class="hebkey" data-for="name" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
  <div id="hkb" class="hkb" hidden><div class="hkb-grid"><button type="button" data-k="א">א</button><button type="button" data-k="ב">ב</button><button type="button" data-k="ג">ג</button><button type="button" data-k="ד">ד</button><button type="button" data-k="ה">ה</button><button type="button" data-k="ו">ו</button><button type="button" data-k="ז">ז</button><button type="button" data-k="ח">ח</button><button type="button" data-k="ט">ט</button><button type="button" data-k="י">י</button><button type="button" data-k="כ">כ</button><button type="button" data-k="ל">ל</button><button type="button" data-k="מ">מ</button><button type="button" data-k="נ">נ</button><button type="button" data-k="ס">ס</button><button type="button" data-k="ע">ע</button><button type="button" data-k="פ">פ</button><button type="button" data-k="צ">צ</button><button type="button" data-k="ק">ק</button><button type="button" data-k="ר">ר</button><button type="button" data-k="ש">ש</button><button type="button" data-k="ת">ת</button><button type="button" data-k="ך">ך</button><button type="button" data-k="ם">ם</button><button type="button" data-k="ן">ן</button><button type="button" data-k="ף">ף</button><button type="button" data-k="ץ">ץ</button></div><div class="hkb-ops"><button type="button" data-k=" ">רווח</button><button type="button" data-k="back">מחק</button><button type="button" data-k="done">סיום</button></div></div>
  <div class="hint" id="h-name" hidden><span class="he">רק שם <bdi dir="ltr">הנפטר/ת</bdi>, בלי <bdi dir="ltr">בן/בת</bdi> ושם ההורה. שם ההורה מתווסף למטה.</span><span class="gloss" dir="ltr">Enter only the deceased's own name, without ben/bat or the parent's name. You can add the parent below.</span></div>
  <div class="err" id="e-name"></div>
  <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m"><span class="he">זָכָר</span><span class="gloss" dir="ltr">Male</span></button><button type="button" data-g="f"><span class="he">נְקֵבָה</span><span class="gloss" dir="ltr">Female</span></button></div>
  <div class="err" id="e-gender"></div>
  <label class="f soft" for="title"><span class="he">תּוֹאַר</span><span class="gloss" dir="ltr">Title (optional, e.g. HaRav)</span></label>
- <div class="iname"><input class="t" id="title" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="הָרַב"><button type="button" class="hebkey" data-for="title" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
+ <div class="iname"><input class="t" id="title" type="text" placeholder="הָרַב"><button type="button" class="hebkey" data-for="title" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
   <div class="ver" id="ver-lab"><div class="ver-row"><span class="he">תפילה ותהילים: בחרו נוסח</span><button type="button" class="info" id="info" aria-expanded="false" aria-controls="info-pop" aria-label="הסבר: שם האב או שם האם"><span aria-hidden="true">ⓘ</span></button></div><span class="gloss" dir="ltr">Prayers and Tehillim: choose a version</span></div>
@@ -240,8 +240,8 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
   <div class="choice"><button type="button" class="opt" data-k="both" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Include Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
  </div>
  <div id="park" hidden>
-  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><div class="iname"><input class="t" id="father" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="button" class="hebkey" data-for="father" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
-  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><div class="iname"><input class="t" id="mother" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="button" class="hebkey" data-for="mother" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
+  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><div class="iname"><input class="t" id="father" type="text"><button type="button" class="hebkey" data-for="father" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
+  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><div class="iname"><input class="t" id="mother" type="text"><button type="button" class="hebkey" data-for="mother" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
  </div>
  <div id="spell" class="spell"></div>
  <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
@@ -331,11 +331,11 @@ var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose mal
 function showErr(id,msg){var el=$(id);if(!msg){if(!el.textContent)return;el.textContent='';return;}var he=heOnly(msg);if(el.textContent===he+(EN[he]||''))return;el.textContent='';var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
 function typingField(){var a=document.activeElement;return !!(a&&a.tagName==='INPUT'&&a.classList.contains('t'));}
 function placeParents(){
- if(typingField()) return;
  var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
- var park=$('park');
+ var park=$('park'), active=document.activeElement;
  ['father','mother'].forEach(function(p){
   var wrap=$('wrap-'+p);
+  if(active&&wrap.contains(active)) return;
   var show=needs(S.opt).indexOf(p)>=0;
   if(show&&slot){wrap.hidden=false;if(wrap.parentNode!==slot)slot.appendChild(wrap);}
   else{wrap.hidden=true;if(wrap.parentNode!==park)park.appendChild(wrap);}
@@ -360,14 +360,14 @@ function renderOpts(){
  var shown=shownName(),base=$('opts').querySelector('.base');
  setText(base.querySelector('.lab .he'),shown?'שם בלבד: '+shown:'שם בלבד');
  setText(base.querySelector('.lab .gloss'),shown?'Name Only: '+shown:'Name Only');
- [].forEach.call($('opts').querySelectorAll('[data-k]'),function(b){
+ [].forEach.call($('opts').querySelectorAll(':scope > .choice > [data-k]'),function(b){
   var pressed=b.dataset.k===S.opt;
   if(b.tagName==='BUTTON'){b.classList.toggle('sel',pressed);if(b.getAttribute('aria-pressed')!==(pressed?'true':'false'))b.setAttribute('aria-pressed',pressed?'true':'false');}
   var cue=cueFor(b.dataset.k),box=b.querySelector('.cue');
   setText(box.querySelector('.he'),cue.he);setText(box.querySelector('.gloss'),cue.en);
  });
  paintHints();
- if(!typingField()) placeParents();
+ placeParents();
  var spell=nameFor(S.opt)||'', bare=clean(S.name);
  setText($('spell'),(spell&&spell!==bare)?spell:'');
 }
@@ -389,8 +389,9 @@ if(window.visualViewport){
  visualViewport.addEventListener('resize',function(){if(typingField())return;ignoreViewport();});
  visualViewport.addEventListener('scroll',function(){if(typingField())return;ignoreViewport();});
 }
+var hkb=$('hkb'), hkbField=null;
+function closeHkb(){if(hkb)hkb.hidden=true;hkbField=null;}
 (function(){
- var hkb=$('hkb'), field=null;
  function putCaret(el,pos){try{el.setSelectionRange(pos,pos);}catch(e){}}
  function typeIn(el,ch){
   var v=el.value, s=el.selectionStart, e=el.selectionEnd;
@@ -406,7 +407,7 @@ if(window.visualViewport){
   el.dispatchEvent(new Event('input',{bubbles:true}));
  }
  function openHkb(el){
-  field=el; hkb.hidden=false;
+  hkbField=el; hkb.hidden=false;
   var row=el.closest('.iname');
   if(row&&hkb.previousElementSibling!==row) row.after(hkb);
   el.focus();
@@ -417,18 +418,23 @@ if(window.visualViewport){
  });
  hkb.addEventListener('pointerdown',function(e){if(e.target.closest('button'))e.preventDefault();});
  hkb.addEventListener('click',function(e){
-  var b=e.target.closest('button'); if(!b||!field)return;
+  var b=e.target.closest('button'); if(!b||!hkbField)return;
   var k=b.getAttribute('data-k');
-  if(k==='done'){hkb.hidden=true;field.focus();return;}
-  if(k==='back'){erase(field);return;}
-  if(k!=null) typeIn(field,k);
+  if(k==='done'){var stay=hkbField;closeHkb();if(stay)stay.focus();return;}
+  if(k==='back'){erase(hkbField);return;}
+  if(k!=null) typeIn(hkbField,k);
+ });
+ document.addEventListener('click',function(e){
+  if(hkb.hidden) return;
+  if(e.target.closest('#hkb, .hebkey')) return;
+  closeHkb();
  });
 })();
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
 [].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
 [].forEach.call($('opts').querySelectorAll('button.opt'),function(b){b.onclick=function(){S.opt=S.opt===b.dataset.k?'name':b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
 renderOpts();
-$('next1').onclick=function(){var ok=true;
+$('next1').onclick=function(){closeHkb();var ok=true;
  var req={title:false,name:true,father:needs(S.opt).indexOf('father')>=0,mother:needs(S.opt).indexOf('mother')>=0};
  ['title','name','father','mother'].forEach(function(k){var e=valid(S[k],req[k]);showErr('e-'+k,e);$(k).classList.toggle('bad',!!e);if(e)ok=false;});
  if(!S.gender){showErr('e-gender','בחרו זכר או נקבה');ok=false;}

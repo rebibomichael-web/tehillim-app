@@ -162,6 +162,47 @@ test('keeps the same name field while typing', async ({ page }) => {
   expect(stable).toBe(true);
 });
 
+test('a keyboard resize leaves the focused name field where it is', async ({ page }) => {
+  const before = await page.locator('#name').evaluate((el) => {
+    el.focus();
+    return { parent: el.parentElement.className, top: el.getBoundingClientRect().top };
+  });
+  await page.setViewportSize({ width: 390, height: 420 });
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event('resize'));
+    if (window.visualViewport) window.visualViewport.dispatchEvent(new Event('resize'));
+  });
+  const after = await page.evaluate(() => {
+    const el = document.getElementById('name');
+    return {
+      active: document.activeElement && document.activeElement.id,
+      parent: el.parentElement.className,
+      top: el.getBoundingClientRect().top
+    };
+  });
+  expect(after.active).toBe('name');
+  expect(after.parent).toBe(before.parent);
+  expect(Math.abs(after.top - before.top)).toBeLessThan(2);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#name')).toBeFocused();
+});
+
+test('the on-screen Hebrew keyboard types into the name', async ({ page }) => {
+  const key = page.locator('.hebkey[data-for="name"]');
+  await expect(key).toHaveAttribute('aria-label', 'מקלדת עברית / Hebrew keyboard');
+  await key.click();
+  await expect(page.locator('#hkb')).toBeVisible();
+  await expect(page.locator('#hkb [data-k]')).toHaveCount(30);
+  await page.locator('#hkb [data-k="ד"]').click();
+  await page.locator('#hkb [data-k="ו"]').click();
+  await expect(page.locator('#name')).toHaveValue('דו');
+  await expect(page.locator('#name')).toBeFocused();
+  await page.locator('#hkb [data-k="back"]').click();
+  await expect(page.locator('#name')).toHaveValue('ד');
+  await page.locator('#hkb [data-k="done"]').click();
+  await expect(page.locator('#hkb')).toBeHidden();
+});
+
 test('spells a name with final letters folded, nikud ignored', async ({ page }) => {
   const folded = await page.evaluate(() => window.__thl.letters('ךםןףץ'));
   expect(folded).toEqual(['כ', 'מ', 'נ', 'פ', 'צ']);
@@ -369,7 +410,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v21';");
+  expect(swText).toContain("var CACHE = 'tehillim-v22';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
 <title>תהילים — לעילוי נשמת</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -64,7 +64,7 @@
 
 :root{--fs:1.1; color-scheme:light}
 html{-webkit-text-size-adjust:100%}
-html,body{overflow-x:hidden;max-width:100%}
+html,body{overflow-x:clip;max-width:100%;overflow-anchor:none}
 body{font-family:"David Libre",serif;overflow-wrap:break-word;direction:rtl;text-align:right;color:#201e1d;background:#f3f2f2;margin:0;padding:16px 18px 115px}
 .cover{text-align:center;padding:10px 0 14px;margin-bottom:14px;border-bottom:2px solid #201e1d}
 .cover .frame,.cover .cover-mid{display:contents}
@@ -95,7 +95,16 @@ img,table,pre{max-width:100%}
 .ttl{font-size:calc(26px*var(--fs));font-weight:700;text-align:center;margin:0 0 14px}
 label.f{display:block;font-size:calc(15px*var(--fs));font-weight:700;margin:14px 0 4px}
 label.f .en{display:inline;margin-inline-start:6px}
-input.t{width:100%;box-sizing:border-box;font-family:"David Libre",serif;font-size:max(20px,calc(20px*var(--fs)));padding:14px 12px;border:2px solid #201e1d;background:#fff;border-radius:0;direction:rtl}
+input.t{width:100%;box-sizing:border-box;font-family:"David Libre",serif;font-size:max(20px,calc(20px*var(--fs)));padding:14px 12px;border:2px solid #201e1d;background:#fff;border-radius:0;direction:rtl;overflow-anchor:none}
+.iname{display:flex;align-items:stretch;gap:8px}
+.iname input.t{width:auto;flex:1 1 auto;min-width:0}
+.hebkey{flex:none;width:52px;min-height:52px;padding:0;border:2px solid #201e1d;background:#fff;color:#201e1d;font-family:"David Libre",serif;font-size:26px;font-weight:700;line-height:1;cursor:pointer}
+.hkb{margin-top:8px;padding:6px;border:2px solid #201e1d;background:#fff}
+.hkb[hidden]{display:none}
+.hkb-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.hkb button{min-height:48px;padding:0;border:1px solid #201e1d;background:#fff;color:#201e1d;font-family:"David Libre",serif;font-size:22px;font-weight:700;line-height:1;cursor:pointer}
+.hkb-ops{display:flex;gap:4px;margin-top:4px}
+.hkb-ops button{flex:1}
 input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outline:3px solid #15599c;outline-offset:2px} .txt{white-space:normal} .screen{max-width:760px;margin-inline:auto} #book{max-width:760px;margin:auto} .skip{position:sticky;top:0;z-index:4;background:#f3f2f2;padding:8px 0;display:flex;gap:8px;align-items:center} .skip select{flex:1;min-width:0;font-size:17px;font-family:inherit;padding:8px;border:2px solid #201e1d;background:white} .skip button{font:700 17px inherit;border:2px solid #201e1d;background:#fff;padding:8px} @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .err{color:#b8250e;font-size:calc(13px*var(--fs));min-height:1em;margin-top:3px}
 .seg{display:flex;gap:0;margin-top:2px}.seg button{flex:1;padding:10px;font-family:"David Libre",serif;font-size:calc(18px*var(--fs));border:2px solid #201e1d;background:#fff;color:#201e1d}
@@ -214,13 +223,14 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 <section id="s1" class="screen on">
  <div class="ttl"><span class="he">לְעִלּוּי נִשְׁמַת</span><span class="gloss" dir="ltr">In Memory Of</span></div>
  <label class="f" id="name-lab" for="name"><span class="he">שם הנפטר</span><span class="gloss" dir="ltr">Deceased's Name</span></label>
- <input class="t" id="name" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="דָּוִד יָעִישׁ">
+ <div class="iname"><input class="t" id="name" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="דָּוִד יָעִישׁ"><button type="button" class="hebkey" data-for="name" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
+ <div id="hkb" class="hkb" hidden><div class="hkb-grid"><button type="button" data-k="א">א</button><button type="button" data-k="ב">ב</button><button type="button" data-k="ג">ג</button><button type="button" data-k="ד">ד</button><button type="button" data-k="ה">ה</button><button type="button" data-k="ו">ו</button><button type="button" data-k="ז">ז</button><button type="button" data-k="ח">ח</button><button type="button" data-k="ט">ט</button><button type="button" data-k="י">י</button><button type="button" data-k="כ">כ</button><button type="button" data-k="ל">ל</button><button type="button" data-k="מ">מ</button><button type="button" data-k="נ">נ</button><button type="button" data-k="ס">ס</button><button type="button" data-k="ע">ע</button><button type="button" data-k="פ">פ</button><button type="button" data-k="צ">צ</button><button type="button" data-k="ק">ק</button><button type="button" data-k="ר">ר</button><button type="button" data-k="ש">ש</button><button type="button" data-k="ת">ת</button><button type="button" data-k="ך">ך</button><button type="button" data-k="ם">ם</button><button type="button" data-k="ן">ן</button><button type="button" data-k="ף">ף</button><button type="button" data-k="ץ">ץ</button></div><div class="hkb-ops"><button type="button" data-k=" ">רווח</button><button type="button" data-k="back">מחק</button><button type="button" data-k="done">סיום</button></div></div>
  <div class="hint" id="h-name" hidden><span class="he">רק שם <bdi dir="ltr">הנפטר/ת</bdi>, בלי <bdi dir="ltr">בן/בת</bdi> ושם ההורה. שם ההורה מתווסף למטה.</span><span class="gloss" dir="ltr">Enter only the deceased's own name, without ben/bat or the parent's name. You can add the parent below.</span></div>
  <div class="err" id="e-name"></div>
  <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m"><span class="he">זָכָר</span><span class="gloss" dir="ltr">Male</span></button><button type="button" data-g="f"><span class="he">נְקֵבָה</span><span class="gloss" dir="ltr">Female</span></button></div>
  <div class="err" id="e-gender"></div>
  <label class="f soft" for="title"><span class="he">תּוֹאַר</span><span class="gloss" dir="ltr">Title (optional, e.g. HaRav)</span></label>
- <input class="t" id="title" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="הָרַב">
+ <div class="iname"><input class="t" id="title" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="הָרַב"><button type="button" class="hebkey" data-for="title" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div>
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
   <div class="ver" id="ver-lab"><div class="ver-row"><span class="he">תפילה ותהילים: בחרו נוסח</span><button type="button" class="info" id="info" aria-expanded="false" aria-controls="info-pop" aria-label="הסבר: שם האב או שם האם"><span aria-hidden="true">ⓘ</span></button></div><span class="gloss" dir="ltr">Prayers and Tehillim: choose a version</span></div>
@@ -230,8 +240,8 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
   <div class="choice"><button type="button" class="opt" data-k="both" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Include Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
  </div>
  <div id="park" hidden>
-  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><input class="t" id="father" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
-  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><input class="t" id="mother" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
+  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><div class="iname"><input class="t" id="father" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="button" class="hebkey" data-for="father" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
+  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><div class="iname"><input class="t" id="mother" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="button" class="hebkey" data-for="mother" aria-label="מקלדת עברית / Hebrew keyboard" title="מקלדת עברית / Hebrew keyboard">א</button></div><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
  </div>
  <div id="spell" class="spell"></div>
  <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
@@ -318,13 +328,14 @@ function spelledLetters(){
 }
 function cueFor(k){var n=countFor(k);return {he:n+' פרקים · ~'+mins(n)+' דקות',en:n+' sections · ~'+mins(n)+' min'};}
 var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose male or female','אותיות עבריות בלבד':'Hebrew letters only','אותיות עבריות וניקוד בלבד':'Hebrew letters and vowels only'};
-function showErr(id,msg){var el=$(id);el.textContent='';if(!msg)return;var he=heOnly(msg);var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
+function showErr(id,msg){var el=$(id);if(!msg){if(!el.textContent)return;el.textContent='';return;}var he=heOnly(msg);if(el.textContent===he+(EN[he]||''))return;el.textContent='';var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
+function typingField(){var a=document.activeElement;return !!(a&&a.tagName==='INPUT'&&a.classList.contains('t'));}
 function placeParents(){
+ if(typingField()) return;
  var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
- var park=$('park'), active=document.activeElement;
+ var park=$('park');
  ['father','mother'].forEach(function(p){
   var wrap=$('wrap-'+p);
-  if(wrap.contains(active)) return;
   var show=needs(S.opt).indexOf(p)>=0;
   if(show&&slot){wrap.hidden=false;if(wrap.parentNode!==slot)slot.appendChild(wrap);}
   else{wrap.hidden=true;if(wrap.parentNode!==park)park.appendChild(wrap);}
@@ -342,22 +353,23 @@ function hasBenBat(s){
  }
  return false;
 }
-function paintHints(){['name','father','mother'].forEach(function(k){var el=$('h-'+k);if(el)el.hidden=!hasBenBat(S[k]);});}
+function setText(el,text){if(el&&el.textContent!==text)el.textContent=text;}
+function paintHints(){['name','father','mother'].forEach(function(k){var el=$('h-'+k);if(!el)return;var hide=!hasBenBat(S[k]);if(el.hidden!==hide)el.hidden=hide;});}
 function renderOpts(){
- $('name-lab').querySelector('.he').textContent=S.gender==='f'?'שם הנפטרת':'שם הנפטר';
+ setText($('name-lab').querySelector('.he'),S.gender==='f'?'שם הנפטרת':'שם הנפטר');
  var shown=shownName(),base=$('opts').querySelector('.base');
- base.querySelector('.lab .he').textContent=shown?'שם בלבד: '+shown:'שם בלבד';
- base.querySelector('.lab .gloss').textContent=shown?'Name Only: '+shown:'Name Only';
+ setText(base.querySelector('.lab .he'),shown?'שם בלבד: '+shown:'שם בלבד');
+ setText(base.querySelector('.lab .gloss'),shown?'Name Only: '+shown:'Name Only');
  [].forEach.call($('opts').querySelectorAll('[data-k]'),function(b){
   var pressed=b.dataset.k===S.opt;
-  if(b.tagName==='BUTTON'){b.classList.toggle('sel',pressed);b.setAttribute('aria-pressed',pressed?'true':'false');}
+  if(b.tagName==='BUTTON'){b.classList.toggle('sel',pressed);if(b.getAttribute('aria-pressed')!==(pressed?'true':'false'))b.setAttribute('aria-pressed',pressed?'true':'false');}
   var cue=cueFor(b.dataset.k),box=b.querySelector('.cue');
-  box.querySelector('.he').textContent=cue.he;box.querySelector('.gloss').textContent=cue.en;
+  setText(box.querySelector('.he'),cue.he);setText(box.querySelector('.gloss'),cue.en);
  });
- placeParents();
- var spell=nameFor(S.opt)||'', bare=clean(S.name);
- $('spell').textContent=(spell&&spell!==bare)?spell:'';
  paintHints();
+ if(!typingField()) placeParents();
+ var spell=nameFor(S.opt)||'', bare=clean(S.name);
+ setText($('spell'),(spell&&spell!==bare)?spell:'');
 }
 ['title','name','father','mother'].forEach(function(k){
  var el=$(k);
@@ -369,7 +381,49 @@ function renderOpts(){
   el.classList.toggle('bad',show&&!!e);
   renderOpts();
  });
+ el.addEventListener('blur',function(){setTimeout(renderOpts,0);});
 });
+function ignoreViewport(){}
+window.addEventListener('resize',function(){if(typingField())return;ignoreViewport();});
+if(window.visualViewport){
+ visualViewport.addEventListener('resize',function(){if(typingField())return;ignoreViewport();});
+ visualViewport.addEventListener('scroll',function(){if(typingField())return;ignoreViewport();});
+}
+(function(){
+ var hkb=$('hkb'), field=null;
+ function putCaret(el,pos){try{el.setSelectionRange(pos,pos);}catch(e){}}
+ function typeIn(el,ch){
+  var v=el.value, s=el.selectionStart, e=el.selectionEnd;
+  if(s==null){el.value=v+ch;putCaret(el,el.value.length);}
+  else{el.value=v.slice(0,s)+ch+v.slice(e);putCaret(el,s+ch.length);}
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+ }
+ function erase(el){
+  var v=el.value, s=el.selectionStart, e=el.selectionEnd;
+  if(s==null){el.value=v.slice(0,-1);putCaret(el,el.value.length);}
+  else if(s!==e){el.value=v.slice(0,s)+v.slice(e);putCaret(el,s);}
+  else if(s>0){el.value=v.slice(0,s-1)+v.slice(e);putCaret(el,s-1);}
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+ }
+ function openHkb(el){
+  field=el; hkb.hidden=false;
+  var row=el.closest('.iname');
+  if(row&&hkb.previousElementSibling!==row) row.after(hkb);
+  el.focus();
+ }
+ [].forEach.call(document.querySelectorAll('.hebkey'),function(b){
+  b.addEventListener('pointerdown',function(e){e.preventDefault();});
+  b.addEventListener('click',function(){openHkb($(b.getAttribute('data-for')));});
+ });
+ hkb.addEventListener('pointerdown',function(e){if(e.target.closest('button'))e.preventDefault();});
+ hkb.addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b||!field)return;
+  var k=b.getAttribute('data-k');
+  if(k==='done'){hkb.hidden=true;field.focus();return;}
+  if(k==='back'){erase(field);return;}
+  if(k!=null) typeIn(field,k);
+ });
+})();
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
 [].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
 [].forEach.call($('opts').querySelectorAll('button.opt'),function(b){b.onclick=function(){S.opt=S.opt===b.dataset.k?'name':b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
@@ -445,7 +499,11 @@ if ('serviceWorker' in navigator) {
  btn.addEventListener('click',openPop);
  x.addEventListener('click',closePop);
  pop.addEventListener('click',function(e){if(e.target===pop)closePop();});
- document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop();});
+ document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(e.target&&e.target.classList&&e.target.classList.contains('t'))return;
+  closePop();
+ });
 })();
 </script>
 </body></html>

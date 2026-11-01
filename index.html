@@ -188,6 +188,10 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s1 .spell{min-height:0;margin:2px 4px 0;text-align:center;font-size:calc(16px*var(--fs));color:#8a8683;line-height:1.4}
 #s1 .spell:empty{display:none}
 #s1 .go{min-height:64px;font-size:calc(24px*var(--fs));margin-top:28px}
+#gender.bad{outline:3px solid #b8250e;outline-offset:3px}
+#name,#gender,#father,#mother{scroll-margin:28px}
+#e-next{text-align:center;margin-top:8px}
+#e-next .gloss{text-align:center}
 #s3 .printbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:56px;margin:0 0 16px;padding:8px 12px;background:#fff;color:#201e1d;border:2px solid #201e1d;font-family:"David Libre",serif;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15;cursor:pointer}
 #s3 .printbtn .gloss{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;color:#787471;font-family:system-ui,sans-serif;font-size:13px;font-weight:400;margin-top:2px}
 @media print{
@@ -245,6 +249,7 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  </div>
  <div id="spell" class="spell"></div>
  <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
+ <div class="err" id="e-next"></div>
 </section>
 <section id="s3" class="screen"><button type="button" class="printbtn" id="printpdf"><span class="he">הורדת PDF / הדפסה</span><span class="gloss" dir="ltr">Download PDF / Print</span></button><div class="skip"><label for="jump">מעבר לפרק</label><select id="jump" aria-label="מעבר לפרק"><option value="">בחרו קטע…</option></select></div><div id="book"></div></section>
 <div class="fsbar" aria-label="גודל הכתב"><button id="minus" aria-label="הקטן">א−</button><button id="plus" aria-label="הגדל">א+</button></div>
@@ -327,7 +332,7 @@ function spelledLetters(){
  return L;
 }
 function cueFor(k){var n=countFor(k);return {he:n+' פרקים · ~'+mins(n)+' דקות',en:n+' sections · ~'+mins(n)+' min'};}
-var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose male or female','אותיות עבריות בלבד':'Hebrew letters only','אותיות עבריות וניקוד בלבד':'Hebrew letters and vowels only'};
+var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose male or female','נא למלא את השם':'Please enter the name','נא לבחור זכר או נקבה':'Please choose Male or Female','נא למלא את שם האב':"Please enter the father's name",'נא למלא את שם האם':"Please enter the mother's name",'אותיות עבריות בלבד':'Hebrew letters only','אותיות עבריות וניקוד בלבד':'Hebrew letters and vowels only'};
 function showErr(id,msg){var el=$(id);if(!msg){if(!el.textContent)return;el.textContent='';return;}var he=heOnly(msg);if(el.textContent===he+(EN[he]||''))return;el.textContent='';var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
 function typingField(){var a=document.activeElement;return !!(a&&a.tagName==='INPUT'&&a.classList.contains('t'));}
 function placeParents(){
@@ -431,14 +436,23 @@ function closeHkb(){if(hkb)hkb.hidden=true;hkbField=null;}
  });
 })();
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
-[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
+[].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();$('gender').classList.remove('bad');showErr('e-gender','');renderOpts();}});paintG();
 [].forEach.call($('opts').querySelectorAll('button.opt'),function(b){b.onclick=function(){S.opt=S.opt===b.dataset.k?'name':b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});
 renderOpts();
-$('next1').onclick=function(){closeHkb();var ok=true;
+function missBox(key){return key==='gender'?$('gender'):$(key);}
+function flagMiss(key,he){showErr('e-'+key,he);if(key==='gender')$('gender').classList.add('bad');else if($(key))$(key).classList.add('bad');}
+function clearMiss(key){showErr('e-'+key,'');if(key==='gender')$('gender').classList.remove('bad');else if($(key))$(key).classList.remove('bad');}
+$('next1').onclick=function(){closeHkb();
  var req={title:false,name:true,father:needs(S.opt).indexOf('father')>=0,mother:needs(S.opt).indexOf('mother')>=0};
- ['title','name','father','mother'].forEach(function(k){var e=valid(S[k],req[k]);showErr('e-'+k,e);$(k).classList.toggle('bad',!!e);if(e)ok=false;});
- if(!S.gender){showErr('e-gender','בחרו זכר או נקבה');ok=false;}
- if(!ok)return;
+ var first=null, firstHe='';
+ function take(key,he){if(he){flagMiss(key,he);if(!first){first=key;firstHe=he;}}else clearMiss(key);}
+ var nameErr=valid(S.name,true);
+ take('name',!clean(S.name)?'נא למלא את השם':nameErr);
+ take('title',valid(S.title,false));
+ take('gender',S.gender?'':'נא לבחור זכר או נקבה');
+ ['father','mother'].forEach(function(k){var e=valid(S[k],req[k]);take(k,req[k]&&!clean(S[k])?(k==='father'?'נא למלא את שם האב':'נא למלא את שם האם'):e);});
+ if(first){showErr('e-next',firstHe);missBox(first).scrollIntoView({behavior:'smooth',block:'center'});return;}
+ showErr('e-next','');
  ['title','name','father','mother'].forEach(function(k){S[k]=clean(S[k]);});
  if(!nameFor(S.opt)){renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();return;}
  save();renderBook();show('s3');};

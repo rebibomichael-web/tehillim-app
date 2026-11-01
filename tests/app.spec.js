@@ -141,10 +141,11 @@ test('hints when בן or בת is its own word', async ({ page }) => {
 
 test('requires a Hebrew name and a gender', async ({ page }) => {
   await page.locator('#next1').click();
-  await expect(page.locator('#e-name .he')).toHaveText('שדה חובה');
-  await expect(page.locator('#e-name .gloss')).toHaveText('Required');
-  await expect(page.locator('#e-gender .he')).toHaveText('בחרו זכר או נקבה');
-  await expect(page.locator('#e-gender .gloss')).toHaveText('Choose male or female');
+  await expect(page.locator('#e-name .he')).toHaveText('נא למלא את השם');
+  await expect(page.locator('#e-name .gloss')).toHaveText('Please enter the name');
+  await expect(page.locator('#e-gender .he')).toHaveText('נא לבחור זכר או נקבה');
+  await expect(page.locator('#e-gender .gloss')).toHaveText('Please choose Male or Female');
+  await expect(page.locator('#e-next .he')).toHaveText('נא למלא את השם');
   await expect(page.locator('#s3')).toBeHidden();
 
   await page.locator('#name').fill('David');
@@ -219,6 +220,23 @@ test('builds the booklet after typing both names on the Hebrew keyboard', async 
   await expect(page.locator('.cover .big')).toContainText('דודץ');
   await expect(page.locator('.cover .big')).toContainText('יוסף');
   expect(errors).toEqual([]);
+});
+
+test('a missing gender scrolls into view on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 520 });
+  await page.locator('#name').fill('דוד');
+  await page.locator('#next1').scrollIntoViewIfNeeded();
+  await page.locator('#next1').click();
+  await expect(page.locator('#e-gender .he')).toHaveText('נא לבחור זכר או נקבה');
+  await expect(page.locator('#e-gender .gloss')).toHaveText('Please choose Male or Female');
+  await expect(page.locator('#e-next .he')).toHaveText('נא לבחור זכר או נקבה');
+  await expect(page.locator('#e-next .gloss')).toHaveText('Please choose Male or Female');
+  await expect(page.locator('#gender')).toHaveClass(/bad/);
+  await expect.poll(async () => page.locator('#gender').evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= window.innerHeight;
+  })).toBe(true);
+  await expect(page.locator('#s3')).toBeHidden();
 });
 
 test('tapping outside the Hebrew keyboard closes it', async ({ page }) => {
@@ -360,8 +378,9 @@ test('reveals a parent field under the chosen row', async ({ page }) => {
   await expect(page.locator('#mother')).toBeHidden();
   await page.locator('#next1').click();
   await expect(page.locator('#s3')).toBeHidden();
-  await expect(page.locator('#e-father .he')).toHaveText('שדה חובה');
-  await expect(page.locator('#e-father .gloss')).toHaveText('Required');
+  await expect(page.locator('#e-father .he')).toHaveText('נא למלא את שם האב');
+  await expect(page.locator('#e-father .gloss')).toHaveText("Please enter the father's name");
+  await expect(page.locator('#e-next .he')).toHaveText('נא למלא את שם האב');
 
   await page.locator('#father').fill('יוֹסֵף');
   await expect(page.locator('.opt[data-k="father"] .cue .he')).toHaveText('7 פרקים · ~15 דקות');
@@ -435,7 +454,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v23';");
+  expect(swText).toContain("var CACHE = 'tehillim-v24';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

@@ -5,6 +5,23 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  const splash = page.locator('#splash');
+  if (await splash.isVisible()) await splash.click();
+});
+
+test('splash shows the graveside title, then the form', async ({ page }) => {
+  await page.goto('/');
+  const splash = page.locator('#splash');
+  await expect(splash).toBeVisible();
+  await expect(splash.locator('.splash-he')).toHaveText('תהילים לאמירה על יד הקבר');
+  await expect(splash.locator('.splash-en')).toHaveText('Tehillim to Say at the Graveside');
+  await expect(splash.locator('.splash-ded')).toHaveText('הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר');
+  await expect(page.locator('.cover .ded')).toHaveCount(0);
+  await splash.click();
+  await expect(splash).toHaveCount(0);
+  await page.locator('#name').fill('דוד');
+  await expect(page.locator('#name')).toHaveValue('דוד');
+  await expect(page.locator('#name')).toBeFocused();
 });
 
 test('opens in Hebrew, right to left', async ({ page }) => {
@@ -481,7 +498,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v25';");
+  expect(swText).toContain("var CACHE = 'tehillim-v26';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

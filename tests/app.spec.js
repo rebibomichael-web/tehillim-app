@@ -195,11 +195,38 @@ test('the on-screen Hebrew keyboard types into the name', async ({ page }) => {
   await page.locator('#hkb [data-k="ד"]').click();
   await page.locator('#hkb [data-k="ו"]').click();
   await expect(page.locator('#name')).toHaveValue('דו');
-  await expect(page.locator('#name')).toBeFocused();
+  await expect(page.locator('#name')).toHaveAttribute('inputmode', 'none');
   await page.locator('#hkb [data-k="back"]').click();
   await expect(page.locator('#name')).toHaveValue('ד');
   await page.locator('#hkb [data-k="done"]').click();
   await expect(page.locator('#hkb')).toBeHidden();
+  await expect(page.locator('#name')).not.toHaveAttribute('inputmode');
+  await expect(page.locator('#name')).not.toHaveAttribute('readonly');
+});
+
+test('on-screen letters do not wake the system keyboard', async ({ page }) => {
+  for (const id of ['name', 'title']) {
+    await page.locator('.hebkey[data-for="' + id + '"]').click();
+    await expect(page.locator('#' + id)).toHaveAttribute('inputmode', 'none');
+    await expect(page.locator('#' + id)).toHaveAttribute('readonly', 'readonly');
+    await expect(page.locator('#' + id)).toHaveClass(/hkb-on/);
+  }
+  await page.locator('#name').evaluate((el) => {
+    el._f = 0;
+    el._b = 0;
+    el.addEventListener('focus', () => { el._f++; });
+    el.addEventListener('blur', () => { el._b++; });
+  });
+  await page.locator('.hebkey[data-for="name"]').click();
+  await page.locator('#hkb [data-k="ד"]').click();
+  await page.locator('#hkb [data-k="ץ"]').click();
+  const cycle = await page.locator('#name').evaluate((el) => ({ f: el._f, b: el._b, active: document.activeElement && document.activeElement.id, val: el.value }));
+  expect(cycle.f).toBe(0);
+  expect(cycle.b).toBe(0);
+  expect(cycle.active).not.toBe('name');
+  expect(cycle.val).toBe('דץ');
+  await page.locator('#hkb [data-k="done"]').click();
+  await expect(page.locator('#name')).not.toHaveAttribute('inputmode');
 });
 
 test('builds the booklet after typing both names on the Hebrew keyboard', async ({ page }) => {
@@ -454,7 +481,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v24';");
+  expect(swText).toContain("var CACHE = 'tehillim-v25';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

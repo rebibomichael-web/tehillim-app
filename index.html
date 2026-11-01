@@ -180,25 +180,26 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 #s3 .printbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:56px;margin:0 0 16px;padding:8px 12px;background:#fff;color:#201e1d;border:2px solid #201e1d;font-family:"David Libre",serif;font-size:calc(18px*var(--fs));font-weight:700;line-height:1.15;cursor:pointer}
 #s3 .printbtn .gloss{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;color:#787471;font-family:system-ui,sans-serif;font-size:13px;font-weight:400;margin-top:2px}
 @media print{
- @page{size:A4;margin:16mm 14mm 18mm}
+ @page{size:A4;margin-top:16mm;margin-right:14mm;margin-bottom:18mm;margin-left:14mm}
  @page{@bottom-center{content:counter(page);font-family:"David Libre",serif;font-size:11pt;color:#000}}
- html,body{background:#fff !important;color:#000 !important;margin:0 !important;padding:0 !important}
+ html{direction:ltr !important;max-width:none !important;width:auto !important;background:#fff !important;color:#000 !important;margin:0 !important;padding:0 !important}
+ body{direction:rtl !important;max-width:none !important;width:auto !important;background:#fff !important;color:#000 !important;margin:0 auto !important;padding:0 !important}
  #s1,.fsbar,.editbar,.skip,#printpdf,#info-pop,button{display:none !important}
- #s3,#s3.on{display:block !important;max-width:none !important;background:#fff}
- #book{max-width:none !important;margin:0 !important}
+ .screen,#s3,#s3.on,#book{direction:rtl !important;display:block !important;width:100% !important;max-width:none !important;margin-left:auto !important;margin-right:auto !important;padding-left:0 !important;padding-right:0 !important;float:none !important;position:static !important;left:auto !important;right:auto !important;transform:none !important;background:#fff}
  .cover{break-after:page;page-break-after:always;text-align:center;border:0;margin:0;padding:42mm 8mm 0;background:#fff}
  .cover .lil{font-size:18pt;letter-spacing:.06em;color:#000}
  .cover .big{font-size:28pt;font-weight:700;line-height:1.45;margin-top:8mm;color:#000}
- h1,h2,.sub{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid;color:#000}
- h1{font-size:15pt;margin:0 0 4mm;padding-bottom:1mm;border-bottom:1.5pt solid #000}
- h2{font-size:13.5pt;margin:5mm 0 2mm}
- h1.brk{break-before:page;page-break-before:always}
- .sub{font-size:13pt;margin:5mm 0 2mm;border-bottom:1pt solid #000}
- .seq{break-after:avoid;page-break-after:avoid;font-size:13pt;color:#000;text-align:center}
- .st{break-inside:avoid;page-break-inside:avoid;margin:0 0 5mm}
- .ltr{font-size:14pt;font-weight:700;text-align:center;color:#000;margin:0 0 1mm}
- .txt{font-size:17pt;line-height:1.7;color:#000;text-align:right;margin:0 0 3mm;orphans:3;widows:3}
- .big2{font-size:17pt;line-height:1.75}
+ h1,h2,.sub,.seq{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid;color:#000}
+ h1{font-size:15pt;margin:1.15em 0 0.35em;padding-bottom:1mm;border-bottom:1.5pt solid #000}
+ h2{font-size:13.5pt;margin:1em 0 0.25em}
+ .sub{font-size:13pt;margin:1em 0 0.25em;border-bottom:1pt solid #000}
+ .seq{break-after:avoid;page-break-after:avoid;font-size:13pt;color:#000;text-align:center;margin:0 0 0.4em}
+ .st,.keep{break-inside:avoid;page-break-inside:avoid}
+ .st{margin:0 0 0.4em}
+ .st .txt{font-size:16pt;line-height:1.45;margin:0}
+ .ltr{font-size:13pt;font-weight:700;text-align:center;color:#000;margin:0 0 0.5mm}
+ .txt{font-size:16.5pt;line-height:1.45;color:#000;text-align:right;margin:0 0 0.2em;orphans:2;widows:2}
+ .big2{font-size:16.5pt;line-height:1.45}
  .en{font-size:9pt;color:#222}
  .en2{font-size:10pt;color:#222}
 }
@@ -370,6 +371,13 @@ $('printpdf').onclick=function(){
  window.print();
  document.title=prev;
 };
+function printDir(on){
+ document.documentElement.dir=on?'ltr':'rtl';
+ var book=$('book');
+ if(book){ if(on) book.dir='rtl'; else book.removeAttribute('dir'); }
+}
+window.addEventListener('beforeprint',function(){printDir(true);});
+window.addEventListener('afterprint',function(){printDir(false);});
 // Book navigation, populated from the rendered headings.
 function buildJump(){var sel=$('jump');sel.innerHTML='<option value="">בחרו קטע…</option>';[].forEach.call($('book').querySelectorAll('h1'),function(h,i){h.id='book-section-'+i;var o=document.createElement('option');o.value=h.id;o.textContent=h.firstChild.textContent.trim();sel.appendChild(o);});sel.value='';}
 $('jump').addEventListener('change',function(){var h=document.getElementById(this.value);if(h){h.scrollIntoView({block:'start'});}});
@@ -381,8 +389,8 @@ function renderBook(){var f=S.gender==='f',spell=nameFor(S.opt),full=withTitle(s
  h+='<h1 class="brk">ג · תְּהִלִּים קי״ט — אוֹתִיּוֹת הַשֵּׁם<span class="en">Psalm 119 · letters of the name</span></h1><div class="seq">'+L.join(' ')+'</div>'+L.map(st).join('');
  h+='<h1 class="brk">ד · תְּהִלִּים קי״ט — נְשָׁמָה<span class="en">Psalm 119 · letters of Neshama</span></h1>'+['נ','ש','מ','ה'].map(st).join('');
  h+='<h1 class="brk">ה · אֵל מָלֵא רַחֲמִים<span class="en">El Malei Rachamim</span></h1><p class="txt big2">אֵל מָלֵא רַחֲמִים שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזֹהַר הָרָקִיעַ מַזְהִירִים, אֶת נִשְׁמַת '+safeFull+' '+(f?'שֶׁהָלְכָה לְעוֹלָמָהּ':'שֶׁהָלַךְ לְעוֹלָמוֹ')+', בַּעֲבוּר שֶׁנָּדַבְנוּ צְדָקָה בְּעַד הַזְכָּרַת '+(f?'נִשְׁמָתָהּ':'נִשְׁמָתוֹ')+', בְּגַן עֵדֶן תְּהֵא '+(f?'מְנוּחָתָהּ':'מְנוּחָתוֹ')+'. לָכֵן בַּעַל הָרַחֲמִים '+(f?'יַסְתִּירֶהָ':'יַסְתִּירֵהוּ')+' בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרֹר בִּצְרוֹר הַחַיִּים אֶת '+(f?'נִשְׁמָתָהּ':'נִשְׁמָתוֹ')+', ה׳ הוּא '+(f?'נַחֲלָתָהּ':'נַחֲלָתוֹ')+', '+(f?'וְתָנוּחַ':'וְיָנוּחַ')+' בְּשָׁלוֹם עַל '+(f?'מִשְׁכָּבָהּ':'מִשְׁכָּבוֹ')+', וְנֹאמַר אָמֵן.</p>';
- h+=FIX.V+'<div class="sub">כְּשֶׁיּוֹצְאִים מִן הַקֶּבֶר אוֹמְרִים<span class="en2">As you leave the grave, say</span></div><p class="txt big2">'+(f?'תִּשְׁכְּבִי בְּשָׁלוֹם':'תִּשְׁכַּב בְּשָׁלוֹם')+' עַד בֹּא מְנַחֵם מַשְׁמִיעַ שָׁלוֹם.</p>';
- h+='<h1>ז · הֲנָחַת אֶבֶן<span class="en">Place a pebble on the grave, then say</span></h1><p class="txt big2">יְהִי רָצוֹן שֶׁתְּהֵא '+(f?'מְנוּחָתָהּ':'מְנוּחָתוֹ')+' שֶׁל '+esc(pebbleName())+' פֹּה בְּכָבוֹד '+(f?'וּזְכוּתָהּ':'וּזְכוּתוֹ')+' יַעֲמוֹד לִי.</p>';
+ h+=FIX.V+'<div class="sub">כְּשֶׁיּוֹצְאִים מִן הַקֶּבֶר אוֹמְרִים<span class="en2">As you leave the grave, say</span></div><p class="txt big2 keep">'+(f?'תִּשְׁכְּבִי בְּשָׁלוֹם':'תִּשְׁכַּב בְּשָׁלוֹם')+' עַד בֹּא מְנַחֵם מַשְׁמִיעַ שָׁלוֹם.</p>';
+ h+='<h1>ז · הֲנָחַת אֶבֶן<span class="en">Place a pebble on the grave, then say</span></h1><p class="txt big2 keep">יְהִי רָצוֹן שֶׁתְּהֵא '+(f?'מְנוּחָתָהּ':'מְנוּחָתוֹ')+' שֶׁל '+esc(pebbleName())+' פֹּה בְּכָבוֹד '+(f?'וּזְכוּתָהּ':'וּזְכוּתוֹ')+' יַעֲמוֹד לִי.</p>';
  $('book').innerHTML=h; document.title='תהילים — '+full;buildJump();}
 window.__thl={S:S,letters:letters,nameFor:nameFor,valid:valid};
 })();

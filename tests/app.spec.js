@@ -348,7 +348,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v17';");
+  expect(swText).toContain("var CACHE = 'tehillim-v18';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");
@@ -455,7 +455,18 @@ test('prints a booklet without splitting a stanza', async ({ page }) => {
       expect(end.page).toBe(start.page);
       cursor = { page: start.page, index: start.index };
     }
-    return pages.length;
+    const blanks = await bottomBlanks(file);
+    blanks.forEach((blank, i) => {
+      if (i === 0 || i === blanks.length - 1) return;
+      expect(blank, file + ' page ' + (i + 1) + ' blank ' + blank.toFixed(3)).toBeLessThan(0.15);
+    });
+    const sides = await sideGaps(file);
+    sides.forEach((gap) => {
+      const delta = Math.abs(gap.leftMm - gap.rightMm);
+      expect(delta, file + ' page ' + gap.page + ' left ' + gap.leftMm.toFixed(1) + 'mm right ' + gap.rightMm.toFixed(1) + 'mm').toBeLessThan(4);
+    });
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    return blanks.length;
   }
 
   const david = '/opt/cursor/artifacts/tehillim-david-yosef.pdf';
@@ -477,6 +488,67 @@ test('prints a booklet without splitting a stanza', async ({ page }) => {
   expect(davidPages).toBeGreaterThan(2);
   expect(bilaPages).toBeGreaterThan(2);
 });
+
+async function bottomBlanks(file) {
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const data = new Uint8Array(fs.readFileSync(file));
+  const doc = await pdfjs.getDocument({ data, disableWorker: true }).promise;
+  const blanks = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const pdfPage = await doc.getPage(i);
+    const height = pdfPage.getViewport({ scale: 1 }).height;
+    const content = await pdfPage.getTextContent();
+    let minY = Infinity;
+    for (const item of content.items) {
+      if (!item.str || !String(item.str).trim()) continue;
+      const y = item.transform[5];
+      const size = Math.abs(item.transform[3] || 0);
+      if (y < 40 && size <= 12) continue;
+      if (y < minY) minY = y;
+    }
+    const bottomMargin = 18 * 72 / 25.4;
+    blanks.push(Math.max(0, minY - bottomMargin) / height);
+  }
+  return blanks;
+}
+
+async function sideGaps(file) {
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const data = new Uint8Array(fs.readFileSync(file));
+  const doc = await pdfjs.getDocument({ data, disableWorker: true }).promise;
+  const mm = (pt) => pt * 25.4 / 72;
+  const gaps = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const pdfPage = await doc.getPage(i);
+    const width = pdfPage.getViewport({ scale: 1 }).width;
+    const content = await pdfPage.getTextContent();
+    const lines = new Map();
+    for (const item of content.items) {
+      if (!item.str || !String(item.str).trim()) continue;
+      const x = item.transform[4];
+      const y = item.transform[5];
+      const size = Math.abs(item.transform[3] || 0);
+      const w = item.width || 0;
+      if (y < 40 && size <= 12) continue;
+      const key = Math.round(y);
+      if (!lines.has(key)) lines.set(key, { minX: Infinity, maxX: -Infinity });
+      const line = lines.get(key);
+      if (x < line.minX) line.minX = x;
+      if (x + w > line.maxX) line.maxX = x + w;
+    }
+    let best = null;
+    for (const line of lines.values()) {
+      const span = line.maxX - line.minX;
+      if (!best || span > best.span) best = { span, minX: line.minX, maxX: line.maxX };
+    }
+    gaps.push({
+      page: i,
+      leftMm: mm(best.minX),
+      rightMm: mm(width - best.maxX)
+    });
+  }
+  return gaps;
+}
 
 function findOnPages(pages, needle, from) {
   for (let p = from.page; p < pages.length; p++) {

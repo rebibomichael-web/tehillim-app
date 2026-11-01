@@ -14,6 +14,17 @@ test('opens in Hebrew, right to left', async ({ page }) => {
   await expect(page.locator('#s1 .ttl .he')).toHaveText('לְעִלּוּי נִשְׁמַת');
   await expect(page.locator('#s1 .ttl .gloss')).toHaveText('In Memory Of');
   await expect(page.locator('#name')).toHaveAttribute('placeholder', 'דָּוִד יָעִישׁ');
+  for (const id of ['name', 'title', 'father', 'mother']) {
+    const field = page.locator('#' + id);
+    await expect(field).toHaveAttribute('type', 'text');
+    await expect(field).toHaveAttribute('lang', 'he');
+    await expect(field).toHaveAttribute('dir', 'rtl');
+    await expect(field).toHaveAttribute('inputmode', 'text');
+    await expect(field).toHaveAttribute('autocomplete', 'nope');
+    await expect(field).toHaveAttribute('autocorrect', 'off');
+    await expect(field).toHaveAttribute('autocapitalize', 'off');
+    await expect(field).toHaveJSProperty('spellcheck', false);
+  }
   await expect(page.locator('#s1 .en')).toHaveCount(0);
   await expect(page.locator('#title')).toBeVisible();
   await expect(page.locator('label[for="title"] .gloss')).toHaveText('Title (optional, e.g. HaRav)');
@@ -141,6 +152,14 @@ test('requires a Hebrew name and a gender', async ({ page }) => {
   await page.locator('#name').fill('David');
   await expect(page.locator('#e-name .he')).toHaveText('אותיות עבריות בלבד');
   await expect(page.locator('#e-name .gloss')).toHaveText('Hebrew letters only');
+});
+
+test('keeps the same name field while typing', async ({ page }) => {
+  await page.locator('#name').evaluate((el) => { el.dataset.same = '1'; });
+  await page.locator('#name').pressSequentially('דוד');
+  await expect(page.locator('#name')).toHaveValue('דוד');
+  const stable = await page.locator('#name').evaluate((el) => el.dataset.same === '1' && document.activeElement === el);
+  expect(stable).toBe(true);
 });
 
 test('spells a name with final letters folded, nikud ignored', async ({ page }) => {
@@ -350,7 +369,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v19';");
+  expect(swText).toContain("var CACHE = 'tehillim-v20';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

@@ -221,13 +221,13 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
 <section id="s1" class="screen on">
  <div class="ttl"><span class="he">לְעִלּוּי נִשְׁמַת</span><span class="gloss" dir="ltr">In Memory Of</span></div>
  <label class="f" id="name-lab" for="name"><span class="he">שם הנפטר</span><span class="gloss" dir="ltr">Deceased's Name</span></label>
- <input class="t" id="name" autocomplete="off" placeholder="דָּוִד יָעִישׁ">
+ <input class="t" id="name" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="דָּוִד יָעִישׁ">
  <div class="hint" id="h-name" hidden><span class="he">רק שם <bdi dir="ltr">הנפטר/ת</bdi>, בלי <bdi dir="ltr">בן/בת</bdi> ושם ההורה. שם ההורה מתווסף למטה.</span><span class="gloss" dir="ltr">Enter only the deceased's own name, without ben/bat or the parent's name. You can add the parent below.</span></div>
  <div class="err" id="e-name"></div>
  <div class="seg" id="gender" role="group" aria-label="זכר או נקבה"><button type="button" data-g="m"><span class="he">זָכָר</span><span class="gloss" dir="ltr">Male</span></button><button type="button" data-g="f"><span class="he">נְקֵבָה</span><span class="gloss" dir="ltr">Female</span></button></div>
  <div class="err" id="e-gender"></div>
  <label class="f soft" for="title"><span class="he">תּוֹאַר</span><span class="gloss" dir="ltr">Title (optional, e.g. HaRav)</span></label>
- <input class="t" id="title" autocomplete="off" placeholder="הָרַב">
+ <input class="t" id="title" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="הָרַב">
  <div class="err" id="e-title"></div>
  <div id="opts" class="choices">
   <div class="ver" id="ver-lab"><div class="ver-row"><span class="he">תפילה ותהילים: בחרו נוסח</span><button type="button" class="info" id="info" aria-expanded="false" aria-controls="info-pop" aria-label="הסבר: שם האב או שם האם"><span aria-hidden="true">ⓘ</span></button></div><span class="gloss" dir="ltr">Prayers and Tehillim: choose a version</span></div>
@@ -237,8 +237,8 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
   <div class="choice"><button type="button" class="opt" data-k="both" aria-pressed="false"><span class="mark" aria-hidden="true"></span><span class="lab"><span class="he">+ שני ההורים</span><span class="gloss" dir="ltr">Include Both Parents</span></span><span class="cue"><span class="he"></span><span class="gloss" dir="ltr"></span></span></button><div class="slot" data-slot="both"></div></div>
  </div>
  <div id="park" hidden>
-  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><input class="t" id="father" autocomplete="off"><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
-  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><input class="t" id="mother" autocomplete="off"><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
+  <div class="field" id="wrap-father"><label class="f soft" for="father"><span class="he">שֵׁם הָאָב</span><span class="gloss" dir="ltr">Father's Name</span></label><input class="t" id="father" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="hint" id="h-father" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-father"></div></div>
+  <div class="field" id="wrap-mother"><label class="f soft" for="mother"><span class="he">שֵׁם הָאֵם</span><span class="gloss" dir="ltr">Mother's Name</span></label><input class="t" id="mother" type="text" lang="he" dir="rtl" inputmode="text" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="hint" id="h-mother" hidden><span class="he">רק שם ההורה, בלי <bdi dir="ltr">בן/בת</bdi></span><span class="gloss" dir="ltr">Parent's name only, without ben/bat</span></div><div class="err" id="e-mother"></div></div>
  </div>
  <div id="spell" class="spell"></div>
  <button class="go" id="next1"><span class="he">לַתְּהִלִּים</span><span class="gloss" dir="ltr">Begin Tehillim</span></button>
@@ -328,10 +328,13 @@ var EN={'שדה חובה':'Required','בחרו זכר או נקבה':'Choose mal
 function showErr(id,msg){var el=$(id);el.textContent='';if(!msg)return;var he=heOnly(msg);var a=document.createElement('span');a.className='he';a.textContent=he;el.appendChild(a);if(EN[he]){var b=document.createElement('span');b.className='gloss';b.dir='ltr';b.textContent=EN[he];el.appendChild(b);}}
 function placeParents(){
  var slot=document.querySelector('.slot[data-slot="'+S.opt+'"]');
+ var park=$('park'), active=document.activeElement;
  ['father','mother'].forEach(function(p){
-  var wrap=$('wrap-'+p), show=needs(S.opt).indexOf(p)>=0;
+  var wrap=$('wrap-'+p);
+  if(wrap.contains(active)) return;
+  var show=needs(S.opt).indexOf(p)>=0;
   if(show&&slot){wrap.hidden=false;if(wrap.parentNode!==slot)slot.appendChild(wrap);}
-  else{$('park').appendChild(wrap);wrap.hidden=true;}
+  else{wrap.hidden=true;if(wrap.parentNode!==park)park.appendChild(wrap);}
  });
 }
 function shownName(){var n=clean(S.name),t=clean(S.title);if(!n)return '';return t?t+' '+n:n;}
@@ -363,7 +366,17 @@ function renderOpts(){
  $('spell').textContent=(spell&&spell!==bare)?spell:'';
  paintHints();
 }
-['title','name','father','mother'].forEach(function(k){$(k).value=S[k]||'';$(k).addEventListener('input',function(){S[k]=$(k).value;var e=valid(S[k],false);var show=/[A-Za-z]/.test(S[k]);showErr('e-'+k,show?e:'');$(k).classList.toggle('bad',show&&!!e);renderOpts();});});
+['title','name','father','mother'].forEach(function(k){
+ var el=$(k);
+ if(document.activeElement!==el) el.value=S[k]||'';
+ el.addEventListener('input',function(){
+  S[k]=el.value;
+  var e=valid(S[k],false), show=/[A-Za-z]/.test(S[k]);
+  showErr('e-'+k,show?e:'');
+  el.classList.toggle('bad',show&&!!e);
+  renderOpts();
+ });
+});
 function paintG(){[].forEach.call($('gender').children,function(b){b.classList.toggle('sel',b.dataset.g===S.gender)});}
 [].forEach.call($('gender').children,function(b){b.onclick=function(){S.gender=b.dataset.g;paintG();showErr('e-gender','');renderOpts();}});paintG();
 [].forEach.call($('opts').querySelectorAll('button.opt'),function(b){b.onclick=function(){S.opt=S.opt===b.dataset.k?'name':b.dataset.k;save();renderOpts();var input=document.querySelector('.slot[data-slot="'+S.opt+'"] input');if(input)input.focus();};});

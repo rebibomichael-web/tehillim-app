@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="utf-8">
+<title>Cover options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;padding:0;background:#fff;direction:ltr}
+.sheet{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;break-after:page;background:#fff;direction:rtl}
+.sheet:last-child{page-break-after:auto;break-after:auto}
+.stage{position:absolute;left:16mm;right:16mm;top:22mm;bottom:24mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.kicker{margin:0;font-weight:500;letter-spacing:.08em}
+.name{margin:0;font-weight:700;line-height:1.25}
+.ded{position:absolute;left:14mm;right:14mm;margin:0;text-align:center;font-weight:400;line-height:1.45;font-size:10.5pt}
+.rule{display:block}
+
+/* 1 thin double rule, the current cover */
+.s1{font-family:"David Libre",serif;color:#1a1a1a}
+.s1 .frame{position:absolute;inset:12mm 12mm 14mm;border:.85pt solid #1c1c1c;padding:1.35mm}
+.s1 .frame-in{height:100%;border:.3pt solid #1c1c1c;position:relative}
+.s1 .corner{position:absolute;width:9mm;height:9mm}
+.s1 .c-tl{top:2.4mm;left:2.4mm}
+.s1 .c-tr{top:2.4mm;right:2.4mm;transform:scaleX(-1)}
+.s1 .c-bl{bottom:2.4mm;left:2.4mm;transform:scaleY(-1)}
+.s1 .c-br{bottom:2.4mm;right:2.4mm;transform:scale(-1)}
+.s1 .stage{inset:22mm 22mm 28mm}
+.s1 .orn{width:48mm;height:4.4mm;margin:0 auto}
+.s1 .kicker{font-size:17pt;margin:4.5mm 0;letter-spacing:.08em}
+.s1 .name{font-size:30pt;margin-top:10mm}
+.s1 .ded{bottom:22mm;color:#5a5a5a;font-family:"David Libre",serif}
+
+/* 2 ornamental flourishes */
+.s2{font-family:"Frank Ruhl Libre","David Libre",serif;color:#1b1b1b;background:#fbfaf7}
+.s2 .outer{position:absolute;inset:10mm 11mm 12mm;border:1.1pt solid #1b1b1b}
+.s2 .inner{position:absolute;inset:14.5mm 15.5mm 16.5mm;border:.4pt solid #1b1b1b}
+.s2 .flourish{position:absolute;width:22mm;height:22mm}
+.s2 .f-tl{top:8mm;left:9mm}
+.s2 .f-tr{top:8mm;right:9mm;transform:scaleX(-1)}
+.s2 .f-bl{bottom:10mm;left:9mm;transform:scaleY(-1)}
+.s2 .f-br{bottom:10mm;right:9mm;transform:scale(-1)}
+.s2 .rosette{width:16mm;height:16mm;margin-bottom:6mm}
+.s2 .kicker{font-size:15pt;letter-spacing:.18em}
+.s2 .hair{width:36mm;height:3mm;margin:5mm auto}
+.s2 .name{font-size:32pt;margin-top:2mm}
+.s2 .ded{bottom:20mm;color:#4e4e4e;font-family:"Frank Ruhl Libre","David Libre",serif}
+
+/* 3 minimalist */
+.s3{font-family:"David Libre",serif;background:#fff;color:#111}
+.s3 .stage{top:0;bottom:18mm}
+.s3 .kicker{font-size:13pt;font-weight:400;letter-spacing:.22em;color:#444}
+.s3 .line{width:28mm;height:0;border-top:.6pt solid #111;margin:7mm auto 9mm}
+.s3 .name{font-size:36pt;font-weight:500}
+.s3 .ded{bottom:16mm;color:#8a8a8a;font-size:10pt}
+
+/* 4 Jerusalem stone arch */
+.s4{font-family:"Frank Ruhl Libre","David Libre",serif;color:#3d3226;
+ background:
+  repeating-linear-gradient(180deg, rgba(90,70,45,.05) 0 1px, transparent 1px 11mm),
+  linear-gradient(180deg,#efe4d2,#e4d3b8 55%,#efe6d6)}
+.s4 .arch{position:absolute;left:16mm;right:16mm;top:12mm;bottom:36mm}
+.s4 .stage{top:48mm;bottom:62mm;left:32mm;right:32mm}
+.s4 .kicker{font-size:15pt;letter-spacing:.14em;color:#5c4632}
+.s4 .name{font-size:28pt;margin-top:6mm;color:#2c241c}
+.s4 .ded{bottom:14mm;color:#6b5844;font-family:"Frank Ruhl Libre","David Libre",serif}
+
+/* 5 navy and gold */
+.s5{font-family:"Frank Ruhl Libre","David Libre",serif;background:#101a2e;color:#f3e6c4}
+.s5 .g1{position:absolute;inset:11mm 12mm 13mm;border:.9pt solid #c6a15b}
+.s5 .g2{position:absolute;inset:14mm 15mm 16mm;border:.35pt solid #c6a15b}
+.s5 .diamond{width:7mm;height:7mm;margin-bottom:7mm}
+.s5 .kicker{font-size:14pt;letter-spacing:.2em;color:#c6a15b}
+.s5 .goldline{width:32mm;height:0;border-top:.5pt solid #c6a15b;margin:6mm auto}
+.s5 .name{font-size:32pt;color:#f7edd4;margin-top:2mm}
+.s5 .ded{bottom:20mm;color:#b7a37a;font-family:"Frank Ruhl Libre","David Libre",serif}
+
+/* 6 burgundy and cream */
+.s6{font-family:"David Libre",serif;background:#f4efe6;color:#6d2030}
+.s6 .panel{position:absolute;inset:12mm 13mm 14mm;background:#fbf7f1;border:1.15pt solid #6d2030;box-shadow:inset 0 0 0 1.6mm #f4efe6, inset 0 0 0 1.9mm #6d2030}
+.s6 .kicker{font-size:16pt;letter-spacing:.12em}
+.s6 .orn{width:42mm;height:5mm;margin:5mm auto}
+.s6 .name{font-size:32pt;color:#4e1622}
+.s6 .ded{bottom:22mm;color:#8a6570;font-family:"David Libre",serif}
+
+/* 7 candle */
+.s7{font-family:"David Libre",serif;background:#fff;color:#1c1c1c}
+.s7 .box{position:absolute;inset:14mm 16mm 16mm;border:.45pt solid #222}
+.s7 .candle{width:18mm;height:42mm;margin-bottom:8mm}
+.s7 .kicker{font-size:14pt;letter-spacing:.16em}
+.s7 .name{font-size:30pt;margin-top:5mm}
+.s7 .ded{bottom:22mm;color:#666;font-family:"David Libre",serif}
+
+/* 8 pomegranate and olive */
+.s8{font-family:"Frank Ruhl Libre","David Libre",serif;background:#fff;color:#1a1a1a}
+.s8 .rim{position:absolute;inset:13mm 14mm 15mm;border:.7pt solid #2a2a2a}
+.s8 .botanical{width:78mm;height:18mm;margin-bottom:8mm}
+.s8 .kicker{font-size:15pt;letter-spacing:.12em}
+.s8 .name{font-size:30pt;margin-top:5mm}
+.s8 .ded{bottom:22mm;color:#5c5c5c;font-family:"Frank Ruhl Libre","David Libre",serif}
+
+/* 9 bold type */
+.s9{font-family:"David Libre",serif;background:#fff;color:#111}
+.s9 .stage{left:14mm;right:14mm}
+.s9 .kicker{font-size:13pt;font-weight:400;letter-spacing:.28em;color:#6d6d6d}
+.s9 .name{font-size:48pt;font-weight:700;letter-spacing:.01em;margin-top:6mm;line-height:1.15}
+.s9 .bar{width:18mm;height:2.2mm;background:#111;margin:8mm auto 0}
+.s9 .ded{bottom:18mm;color:#7a7a7a;font-size:10.5pt;font-family:"David Libre",serif}
+
+/* 10 grey wash and star */
+.s10{font-family:"Frank Ruhl Libre","David Libre",serif;color:#2a2a2a;
+ background:
+  radial-gradient(ellipse at 18% 22%, rgba(80,80,80,.16), transparent 42%),
+  radial-gradient(ellipse at 82% 78%, rgba(60,60,60,.12), transparent 46%),
+  radial-gradient(ellipse at 60% 40%, rgba(120,120,120,.08), transparent 40%),
+  #f3f3f2}
+.s10 .star{position:absolute;left:50%;top:46%;width:118mm;height:118mm;transform:translate(-50%,-50%);opacity:.16}
+.s10 .kicker{font-size:15pt;letter-spacing:.14em;color:#3a3a3a}
+.s10 .name{font-size:32pt;margin-top:6mm;color:#1c1c1c}
+.s10 .ded{bottom:16mm;color:#6e6e6e;font-family:"Frank Ruhl Libre","David Libre",serif}
+</style>
+</head>
+<body>
+
+<section class="sheet s1">
+ <div class="frame"><div class="frame-in">
+  <svg class="corner c-tl" viewBox="0 0 36 36" aria-hidden="true"><path d="M2.4 15 V3.2 H14.2" fill="none" stroke="#242424" stroke-width="1.15"/><path d="M6.2 19 V7 H18" fill="none" stroke="#242424" stroke-width="0.4"/><path d="M9.4 9.4 l1.8 1.8 -1.8 1.8 -1.8 -1.8 z" fill="#242424"/></svg>
+  <svg class="corner c-tr" viewBox="0 0 36 36" aria-hidden="true"><path d="M2.4 15 V3.2 H14.2" fill="none" stroke="#242424" stroke-width="1.15"/><path d="M6.2 19 V7 H18" fill="none" stroke="#242424" stroke-width="0.4"/><path d="M9.4 9.4 l1.8 1.8 -1.8 1.8 -1.8 -1.8 z" fill="#242424"/></svg>
+  <svg class="corner c-bl" viewBox="0 0 36 36" aria-hidden="true"><path d="M2.4 15 V3.2 H14.2" fill="none" stroke="#242424" stroke-width="1.15"/><path d="M6.2 19 V7 H18" fill="none" stroke="#242424" stroke-width="0.4"/><path d="M9.4 9.4 l1.8 1.8 -1.8 1.8 -1.8 -1.8 z" fill="#242424"/></svg>
+  <svg class="corner c-br" viewBox="0 0 36 36" aria-hidden="true"><path d="M2.4 15 V3.2 H14.2" fill="none" stroke="#242424" stroke-width="1.15"/><path d="M6.2 19 V7 H18" fill="none" stroke="#242424" stroke-width="0.4"/><path d="M9.4 9.4 l1.8 1.8 -1.8 1.8 -1.8 -1.8 z" fill="#242424"/></svg>
+ </div></div>
+ <div class="stage">
+  <svg class="orn" viewBox="0 0 180 14" aria-hidden="true"><line x1="4" y1="7" x2="76" y2="7" stroke="#242424" stroke-width="0.65"/><line x1="104" y1="7" x2="176" y2="7" stroke="#242424" stroke-width="0.65"/><path d="M90 1.6 L96.4 7 L90 12.4 L83.6 7 Z" fill="none" stroke="#242424" stroke-width="0.65"/></svg>
+  <p class="kicker">לעילוי נשמת</p>
+  <svg class="orn" viewBox="0 0 180 14" aria-hidden="true"><line x1="4" y1="7" x2="76" y2="7" stroke="#242424" stroke-width="0.65"/><line x1="104" y1="7" x2="176" y2="7" stroke="#242424" stroke-width="0.65"/><path d="M90 1.6 L96.4 7 L90 12.4 L83.6 7 Z" fill="none" stroke="#242424" stroke-width="0.65"/></svg>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s2">
+ <div class="outer"></div><div class="inner"></div>
+ <svg class="flourish f-tl" viewBox="0 0 80 80" aria-hidden="true"><path d="M8 46 C8 18 20 8 48 8" fill="none" stroke="#1a1a1a" stroke-width="1.3"/><path d="M8 34 C8 16 18 8 36 8" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><path d="M18 30 C26 18 34 16 42 22" fill="none" stroke="#1a1a1a" stroke-width="0.55"/><path d="M22 26 C28 20 34 22 32 28 C28 26 24 26 22 26" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><circle cx="14" cy="14" r="1.5" fill="#1a1a1a"/></svg>
+ <svg class="flourish f-tr" viewBox="0 0 80 80" aria-hidden="true"><path d="M8 46 C8 18 20 8 48 8" fill="none" stroke="#1a1a1a" stroke-width="1.3"/><path d="M8 34 C8 16 18 8 36 8" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><path d="M18 30 C26 18 34 16 42 22" fill="none" stroke="#1a1a1a" stroke-width="0.55"/><path d="M22 26 C28 20 34 22 32 28 C28 26 24 26 22 26" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><circle cx="14" cy="14" r="1.5" fill="#1a1a1a"/></svg>
+ <svg class="flourish f-bl" viewBox="0 0 80 80" aria-hidden="true"><path d="M8 46 C8 18 20 8 48 8" fill="none" stroke="#1a1a1a" stroke-width="1.3"/><path d="M8 34 C8 16 18 8 36 8" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><path d="M18 30 C26 18 34 16 42 22" fill="none" stroke="#1a1a1a" stroke-width="0.55"/><path d="M22 26 C28 20 34 22 32 28 C28 26 24 26 22 26" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><circle cx="14" cy="14" r="1.5" fill="#1a1a1a"/></svg>
+ <svg class="flourish f-br" viewBox="0 0 80 80" aria-hidden="true"><path d="M8 46 C8 18 20 8 48 8" fill="none" stroke="#1a1a1a" stroke-width="1.3"/><path d="M8 34 C8 16 18 8 36 8" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><path d="M18 30 C26 18 34 16 42 22" fill="none" stroke="#1a1a1a" stroke-width="0.55"/><path d="M22 26 C28 20 34 22 32 28 C28 26 24 26 22 26" fill="none" stroke="#1a1a1a" stroke-width="0.45"/><circle cx="14" cy="14" r="1.5" fill="#1a1a1a"/></svg>
+ <div class="stage">
+  <svg class="rosette" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="4" fill="none" stroke="#1a1a1a" stroke-width="0.8"/><path d="M32 8 C36 18 36 22 32 28 C28 22 28 18 32 8 M32 56 C36 46 36 42 32 36 C28 42 28 46 32 56 M8 32 C18 28 22 28 28 32 C22 36 18 36 8 32 M56 32 C46 28 42 28 36 32 C42 36 46 36 56 32" fill="none" stroke="#1a1a1a" stroke-width="0.7"/></svg>
+  <p class="kicker">לעילוי נשמת</p>
+  <svg class="hair" viewBox="0 0 120 8" aria-hidden="true"><path d="M4 4 H50 M70 4 H116" stroke="#1a1a1a" stroke-width="0.6"/><circle cx="60" cy="4" r="1.4" fill="#1a1a1a"/></svg>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s3">
+ <div class="stage">
+  <p class="kicker">לעילוי נשמת</p>
+  <div class="line"></div>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s4">
+ <svg class="arch" viewBox="0 0 200 300" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M18 292 V118 Q18 18 100 18 Q182 18 182 118 V292" fill="none" stroke="#7a6248" stroke-width="2.4"/>
+  <path d="M30 292 V124 Q30 34 100 34 Q170 34 170 124 V292" fill="none" stroke="#7a6248" stroke-width="0.7"/>
+  <path d="M92 30 L100 16 L108 30 L100 38 Z" fill="none" stroke="#7a6248" stroke-width="0.8"/>
+  <path d="M30 286 H170" stroke="#7a6248" stroke-width="0.8"/>
+ </svg>
+ <div class="stage">
+  <p class="kicker">לעילוי נשמת</p>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s5">
+ <div class="g1"></div><div class="g2"></div>
+ <div class="stage">
+  <svg class="diamond" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1 L19 10 L10 19 L1 10 Z" fill="none" stroke="#c6a15b" stroke-width="0.7"/></svg>
+  <p class="kicker">לעילוי נשמת</p>
+  <div class="goldline"></div>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s6">
+ <div class="panel"></div>
+ <div class="stage">
+  <p class="kicker">לעילוי נשמת</p>
+  <svg class="orn" viewBox="0 0 160 16" aria-hidden="true"><path d="M8 8 H62 M98 8 H152" stroke="#6d2030" stroke-width="0.7"/><path d="M80 2 L88 8 L80 14 L72 8 Z" fill="none" stroke="#6d2030" stroke-width="0.7"/></svg>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s7">
+ <div class="box"></div>
+ <div class="stage">
+  <svg class="candle" viewBox="0 0 60 130" aria-hidden="true">
+   <path d="M30 6 C40 24 42 36 30 50 C18 36 20 24 30 6 Z" fill="none" stroke="#1c1c1c" stroke-width="1.1"/>
+   <path d="M30 18 C35 28 35 34 30 40 C25 34 25 28 30 18 Z" fill="none" stroke="#1c1c1c" stroke-width="0.45"/>
+   <line x1="30" y1="50" x2="30" y2="58" stroke="#1c1c1c" stroke-width="0.7"/>
+   <rect x="20" y="58" width="20" height="46" fill="none" stroke="#1c1c1c" stroke-width="1.1"/>
+   <line x1="20" y1="66" x2="40" y2="66" stroke="#1c1c1c" stroke-width="0.4"/>
+   <path d="M14 108 H46 L41 118 H19 Z" fill="none" stroke="#1c1c1c" stroke-width="1"/>
+  </svg>
+  <p class="kicker">לעילוי נשמת</p>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s8">
+ <div class="rim"></div>
+ <div class="stage">
+  <svg class="botanical" viewBox="0 0 280 64" aria-hidden="true">
+   <path d="M20 40 C50 36 70 28 96 22" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+   <ellipse cx="36" cy="32" rx="8" ry="3" transform="rotate(-35 36 32)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="54" cy="28" rx="8" ry="3" transform="rotate(25 54 28)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="72" cy="24" rx="7" ry="2.6" transform="rotate(-30 72 24)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="86" cy="30" rx="6" ry="2.4" transform="rotate(40 86 30)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <g transform="translate(118,6)">
+    <path d="M22 8 C16 12 14 16 16 20 C18 16 20 14 22 14 C24 14 26 16 28 20 C30 16 28 12 22 8 Z" fill="none" stroke="#1a1a1a" stroke-width="0.7"/>
+    <circle cx="22" cy="30" r="12" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+    <path d="M16 28 Q22 24 28 28 M16 33 Q22 29 28 33" fill="none" stroke="#1a1a1a" stroke-width="0.4"/>
+    <circle cx="18" cy="30" r="0.7" fill="#1a1a1a"/><circle cx="22" cy="32" r="0.7" fill="#1a1a1a"/><circle cx="26" cy="30" r="0.7" fill="#1a1a1a"/>
+   </g>
+   <path d="M184 22 C210 28 230 36 260 40" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+   <ellipse cx="200" cy="24" rx="7" ry="2.6" transform="rotate(30 200 24)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="218" cy="28" rx="8" ry="3" transform="rotate(-25 218 28)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="236" cy="32" rx="8" ry="3" transform="rotate(35 236 32)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+   <ellipse cx="250" cy="30" rx="6" ry="2.4" transform="rotate(-40 250 30)" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+  </svg>
+  <p class="kicker">לעילוי נשמת</p>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s9">
+ <div class="stage">
+  <p class="kicker">לעילוי נשמת</p>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+  <div class="bar"></div>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+<section class="sheet s10">
+ <svg class="star" viewBox="0 0 100 100" aria-hidden="true">
+  <polygon points="50,6 93,80 7,80" fill="none" stroke="#3a3a3a" stroke-width="0.7"/>
+  <polygon points="50,94 7,20 93,20" fill="none" stroke="#3a3a3a" stroke-width="0.7"/>
+ </svg>
+ <div class="stage">
+  <p class="kicker">לעילוי נשמת</p>
+  <h1 class="name">הרב דוד בן יוסף</h1>
+ </div>
+ <p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>
+</section>
+
+</body>
+</html>

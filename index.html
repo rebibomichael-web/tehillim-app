@@ -67,6 +67,8 @@ html{-webkit-text-size-adjust:100%}
 html,body{overflow-x:hidden;max-width:100%}
 body{font-family:"David Libre",serif;overflow-wrap:break-word;direction:rtl;text-align:right;color:#201e1d;background:#f3f2f2;margin:0;padding:16px 18px 115px}
 .cover{text-align:center;padding:10px 0 14px;margin-bottom:14px;border-bottom:2px solid #201e1d}
+.cover .frame,.cover .frame-in,.cover .cover-mid{display:contents}
+.cover .orn,.cover .ded,.cover .corner{display:none}
 .cover .lil{font-size:calc(15px*var(--fs));letter-spacing:.05em}
 .cover .big{font-size:calc(24px*var(--fs));font-weight:700;margin-top:4px;line-height:1.4}
 .sep{display:none}
@@ -186,9 +188,20 @@ input.t.bad{border-color:#b8250e} button:focus-visible,input:focus-visible{outli
  body{direction:rtl !important;max-width:none !important;width:auto !important;background:#fff !important;color:#000 !important;margin:0 auto !important;padding:0 !important}
  #s1,.fsbar,.editbar,.skip,#printpdf,#info-pop,button{display:none !important}
  .screen,#s3,#s3.on,#book{direction:rtl !important;display:block !important;width:100% !important;max-width:none !important;margin-left:auto !important;margin-right:auto !important;padding-left:0 !important;padding-right:0 !important;float:none !important;position:static !important;left:auto !important;right:auto !important;transform:none !important;background:#fff}
- .cover{break-after:page;page-break-after:always;text-align:center;border:0;margin:0;padding:42mm 8mm 0;background:#fff}
- .cover .lil{font-size:18pt;letter-spacing:.06em;color:#000}
- .cover .big{font-size:28pt;font-weight:700;line-height:1.45;margin-top:8mm;color:#000}
+ .cover{break-after:page;page-break-after:always;box-sizing:border-box;height:250mm;margin:2mm 0 0;padding:0;border:0;background:#fff;text-align:center;position:relative}
+ .cover .frame{display:block;box-sizing:border-box;height:100%;border:0.85pt solid #1c1c1c;padding:1.35mm;background:#fff}
+ .cover .frame-in{display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;height:100%;border:0.3pt solid #1c1c1c;position:relative;padding:14mm 12mm 16mm;background:#fff}
+ .cover .corner{display:block;position:absolute;width:9mm;height:9mm;line-height:0}
+ .cover .corner svg{display:block;width:100%;height:100%}
+ .cover .c-tl{top:2.4mm;left:2.4mm}
+ .cover .c-tr{top:2.4mm;right:2.4mm;transform:scaleX(-1)}
+ .cover .c-bl{bottom:2.4mm;left:2.4mm;transform:scaleY(-1)}
+ .cover .c-br{bottom:2.4mm;right:2.4mm;transform:scale(-1)}
+ .cover .cover-mid{display:block;width:100%;text-align:center}
+ .cover .orn{display:block;width:48mm;height:4.4mm;margin:0 auto}
+ .cover .lil{font-family:"David Libre",serif;font-size:17pt;font-weight:500;letter-spacing:.08em;color:#1a1a1a;margin:4.5mm 0}
+ .cover .big{font-family:"David Libre",serif;font-size:30pt;font-weight:700;line-height:1.35;margin:10mm 0 0;color:#111}
+ .cover .ded{display:block;position:absolute;left:8mm;right:8mm;bottom:7mm;margin:0;text-align:center;font-family:"David Libre",serif;font-size:10.5pt;font-weight:400;line-height:1.45;color:#5a5a5a;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  h1,h2,.sub,.seq{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid;color:#000}
  h1{font-size:15pt;margin:1.15em 0 0.35em;padding-bottom:1mm;border-bottom:1.5pt solid #000}
  h2{font-size:13.5pt;margin:1em 0 0.25em}
@@ -384,7 +397,14 @@ $('jump').addEventListener('change',function(){var h=document.getElementById(thi
 // booklet
 function st(c){return '<div class="st"><div class="ltr">'+c+'</div><p class="txt">'+BANK[c]+'</p></div>';}
 function renderBook(){var f=S.gender==='f',spell=nameFor(S.opt),full=withTitle(spell),L=spelledLetters();
- var safeFull=esc(full);var h='<div class="cover"><div class="lil">לְעִלּוּי נִשְׁמַת</div><div class="big">'+safeFull+'</div></div>';
+ var safeFull=esc(full);
+ var orn='<svg class="orn" viewBox="0 0 180 14" aria-hidden="true" focusable="false"><line x1="4" y1="7" x2="76" y2="7" stroke="#242424" stroke-width="0.65"/><line x1="104" y1="7" x2="176" y2="7" stroke="#242424" stroke-width="0.65"/><path d="M90 1.6 L96.4 7 L90 12.4 L83.6 7 Z" fill="none" stroke="#242424" stroke-width="0.65"/></svg>';
+ var cor='<svg viewBox="0 0 36 36" aria-hidden="true" focusable="false"><path d="M2.4 15 V3.2 H14.2" fill="none" stroke="#242424" stroke-width="1.15"/><path d="M6.2 19 V7 H18" fill="none" stroke="#242424" stroke-width="0.4"/><path d="M9.4 9.4 l1.8 1.8 -1.8 1.8 -1.8 -1.8 z" fill="#242424"/></svg>';
+ var h='<div class="cover"><div class="frame"><div class="frame-in">'
+  +'<span class="corner c-tl">'+cor+'</span><span class="corner c-tr">'+cor+'</span><span class="corner c-bl">'+cor+'</span><span class="corner c-br">'+cor+'</span>'
+  +'<div class="cover-mid">'+orn+'<div class="lil">לְעִלּוּי נִשְׁמַת</div>'+orn+'<div class="big">'+safeFull+'</div></div>'
+  +'<p class="ded">הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר</p>'
+  +'</div></div></div>';
  h+=FIX.A+FIX.B;
  h+='<h1 class="brk">ג · תְּהִלִּים קי״ט — אוֹתִיּוֹת הַשֵּׁם<span class="en">Psalm 119 · letters of the name</span></h1><div class="seq">'+L.join(' ')+'</div>'+L.map(st).join('');
  h+='<h1 class="brk">ד · תְּהִלִּים קי״ט — נְשָׁמָה<span class="en">Psalm 119 · letters of Neshama</span></h1>'+['נ','ש','מ','ה'].map(st).join('');

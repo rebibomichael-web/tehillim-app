@@ -229,6 +229,8 @@ test('builds the masculine booklet, title excluded from the spelling', async ({ 
   await expect(page.locator('#s3')).toBeVisible();
   await expect(page.locator('.cover .lil')).toHaveText('לְעִלּוּי נִשְׁמַת');
   await expect(page.locator('.cover .big')).toHaveText('הָרַב דָּוִד יָעִישׁ בֶּן יוֹסֵף');
+  await expect(page.locator('.cover .ded')).toHaveText('הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר');
+  await expect(page.locator('.cover .ded')).toBeHidden();
   await expect(page.locator('.seq')).toHaveText('ד ו ד י ע י ש י ו ס פ');
   await expect(page.locator('.cover .big')).toContainText('בֶּן');
   await expect(page.locator('#book')).toContainText('שֶׁהָלַךְ לְעוֹלָמוֹ');
@@ -348,7 +350,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v18';");
+  expect(swText).toContain("var CACHE = 'tehillim-v19';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");
@@ -442,6 +444,8 @@ test('prints a booklet without splitting a stanza', async ({ page }) => {
     expect(joined).not.toContain('בחרוקטע');
     expect(pages[0]).toContain('לעלוינשמת');
     expect(pages[0]).toContain(hebOnly(cover));
+    expect(pages[0]).toContain(hebOnly('הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר'));
+    expect(pages[1] || '').not.toContain(hebOnly('הוקדש לעילוי נשמת הרב דוד יעיש בן אסתר'));
     expect(pages[0]).not.toContain('אשריצראתכם');
     let cursor = { page: 0, index: 0 };
     for (const stanza of stanzas) {

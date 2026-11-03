@@ -3,13 +3,17 @@ const fs = require('fs');
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.removeItem('thl-splash');
+  });
   await page.reload();
   const splash = page.locator('#splash');
   if (await splash.isVisible()) await splash.click();
 });
 
 test('splash shows the graveside title, then the form', async ({ page }) => {
+  await page.evaluate(() => sessionStorage.removeItem('thl-splash'));
   await page.goto('/');
   const splash = page.locator('#splash');
   await expect(splash).toBeVisible();
@@ -22,6 +26,59 @@ test('splash shows the graveside title, then the form', async ({ page }) => {
   await page.locator('#name').fill('דוד');
   await expect(page.locator('#name')).toHaveValue('דוד');
   await expect(page.locator('#name')).toBeFocused();
+});
+
+test('splash shows once per fresh session, including after a reload', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'he-IL' });
+  const page = await context.newPage();
+  await page.goto('/');
+  await expect(page.locator('#splash')).toBeVisible();
+  await expect(page.locator('#splash')).toHaveCount(0, { timeout: 4000 });
+  await expect(page.locator('#name')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('#splash')).toHaveCount(0);
+  await expect(page.locator('#name')).toBeVisible();
+  await context.close();
+});
+
+test('splash shows once when a new service worker takes control', async ({ browser }) => {
+  test.setTimeout(30000);
+  const swPath = require('path').join(__dirname, '..', 'sw.js');
+  const original = fs.readFileSync(swPath, 'utf8');
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'he-IL' });
+  const page = await context.newPage();
+  await page.addInitScript(() => {
+    sessionStorage.setItem('thl-boots', String(Number(sessionStorage.getItem('thl-boots') || '0') + 1));
+  });
+  try {
+    await page.goto('/');
+    await page.locator('#splash').click();
+    await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+      if (!navigator.serviceWorker.controller) {
+        await new Promise((resolve) => {
+          navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true });
+        });
+      }
+    });
+    fs.writeFileSync(swPath, original.replace(/var CACHE = '[^']+';/, "var CACHE = 'tehillim-v31-update-test';"));
+    await page.evaluate(() => {
+      sessionStorage.removeItem('thl-splash');
+      sessionStorage.setItem('thl-boots', '0');
+    });
+    await page.goto('/?open=2');
+    await expect(page.locator('#splash')).toBeVisible();
+    await expect(page.locator('#splash')).toHaveCount(0, { timeout: 4000 });
+    await expect(page.locator('#name')).toBeVisible();
+    await page.waitForTimeout(2500);
+    const boots = await page.evaluate(() => sessionStorage.getItem('thl-boots'));
+    expect(boots).toBe('1');
+    await expect(page.locator('#splash')).toHaveCount(0);
+    await expect(page.locator('#name')).toBeVisible();
+  } finally {
+    fs.writeFileSync(swPath, original);
+    await context.close();
+  }
 });
 
 test('opens in Hebrew, right to left', async ({ page }) => {
@@ -498,7 +555,7 @@ test('manifest, icons, and guarded service worker are served', async ({ page }) 
   expect(swText).toContain('only-if-cached');
   expect(swText).toContain("request.method !== 'GET'");
   expect(swText).toContain('url.origin !== self.location.origin');
-  expect(swText).toContain("var CACHE = 'tehillim-v30';");
+  expect(swText).toContain("var CACHE = 'tehillim-v31';");
   expect(swText).toContain('self.skipWaiting()');
   expect(swText).toContain('self.clients.claim()');
   expect(swText).toContain("fetch(event.request, { cache: 'reload' })");

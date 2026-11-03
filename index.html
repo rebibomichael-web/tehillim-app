@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl"><head>
 <meta charset="utf-8">
+<script>try{if(sessionStorage.getItem('thl-splash')==='1')document.documentElement.classList.add('splash-seen')}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
 <title>תהילים — לעילוי נשמת</title>
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -70,6 +71,7 @@ body{font-family:"David Libre",serif;overflow-wrap:break-word;direction:rtl;text
 .cover .frame,.cover .cover-mid{display:contents}
 .cover .candle,.cover .ded,.cover .grave,.cover .grave-en{display:none}
 #splash{position:fixed;inset:0;z-index:80;background:#f3f2f2;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}
+html.splash-seen #splash{display:none !important}
 #splash .splash-frame{position:relative;box-sizing:border-box;width:100%;height:100%;border:.45pt solid #222;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 20px 88px}
 #splash .candle{width:64px;height:150px;margin:0 auto 18px;display:block}
 #splash .splash-he{font-family:"David Libre",serif;font-size:21px;font-weight:500;line-height:1.35;margin:0;padding:0;border:0;color:#111}
@@ -521,6 +523,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', function () {
     if (!hadController || refreshing) return;
     refreshing = true;
+    try { if (sessionStorage.getItem('thl-splash') === '1') return; } catch (e) {}
     window.location.reload();
   });
   window.addEventListener('load', function () {
@@ -553,8 +556,16 @@ if ('serviceWorker' in navigator) {
 (function(){
  var SPLASH_HOLD_MS = 1500;
  var SPLASH_FADE_MS = 300;
+ var SPLASH_SEEN_KEY = 'thl-splash';
+ function splashSeen(){ try { return sessionStorage.getItem(SPLASH_SEEN_KEY) === '1'; } catch (e) { return false; } }
+ function markSplashSeen(){ try { sessionStorage.setItem(SPLASH_SEEN_KEY, '1'); } catch (e) {} }
  var splash=document.getElementById('splash');
  if(!splash) return;
+ if(splashSeen()){
+  if(splash.parentNode) splash.parentNode.removeChild(splash);
+  return;
+ }
+ markSplashSeen();
  splash.style.setProperty('--splash-fade', (SPLASH_FADE_MS / 1000) + 's');
  var roots=['s1','s3','editbar','info-pop'];
  roots.forEach(function(id){var el=document.getElementById(id);if(el)el.inert=true;});
@@ -563,6 +574,7 @@ if ('serviceWorker' in navigator) {
  function finish(){
   if(gone) return;
   gone=true;
+  markSplashSeen();
   clearTimeout(timer); clearTimeout(fadeTimer);
   if(splash.parentNode) splash.parentNode.removeChild(splash);
   roots.forEach(function(id){var el=document.getElementById(id);if(el)el.inert=false;});

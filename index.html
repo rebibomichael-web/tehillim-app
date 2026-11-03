@@ -75,7 +75,7 @@ body{font-family:"David Libre",serif;overflow-wrap:break-word;direction:rtl;text
 #splash .splash-he{font-family:"David Libre",serif;font-size:21px;font-weight:500;line-height:1.35;margin:0;padding:0;border:0;color:#111}
 #splash .splash-en{font-family:system-ui,sans-serif;font-size:16px;font-weight:400;line-height:1.35;color:#3a3a3a;margin:12px 0 0}
 #splash .splash-ded{position:absolute;left:18px;right:18px;bottom:22px;margin:0;font-family:"David Libre",serif;font-size:15px;font-weight:400;line-height:1.45;color:#5a5a5a}
-#splash.out{opacity:0;transition:opacity .8s ease}
+#splash.out{opacity:0;transition:opacity var(--splash-fade, .3s) ease}
 @media (prefers-reduced-motion:reduce){#splash,#splash.out{transition:none}}
 .cover .lil{font-size:calc(15px*var(--fs));letter-spacing:.05em}
 .cover .big{font-size:calc(24px*var(--fs));font-weight:700;margin-top:4px;line-height:1.4}
@@ -551,12 +551,15 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 (function(){
+ var SPLASH_HOLD_MS = 500;
+ var SPLASH_FADE_MS = 300;
  var splash=document.getElementById('splash');
  if(!splash) return;
+ splash.style.setProperty('--splash-fade', (SPLASH_FADE_MS / 1000) + 's');
  var roots=['s1','s3','editbar','info-pop'];
  roots.forEach(function(id){var el=document.getElementById(id);if(el)el.inert=true;});
  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- var hold=reduce?1200:3500, fade=reduce?0:800, gone=false, timer=0, fadeTimer=0;
+ var hold=reduce?1200:SPLASH_HOLD_MS, fade=reduce?0:SPLASH_FADE_MS, gone=false, timer=0, fadeTimer=0;
  function finish(){
   if(gone) return;
   gone=true;
